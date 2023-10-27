@@ -20,10 +20,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ironmeddie.donat.R
-import com.ironmeddie.donat.models.ItemBuhlo
+import com.ironmeddie.donat.models.Category
+
 
 @Composable
-fun BuhloListItem(item: ItemBuhlo) {
+fun BuhloListItem(item: Category) {
     Row(
         modifier = Modifier
             .padding(horizontal = 24.dp, vertical = 9.dp)
@@ -36,7 +37,7 @@ fun BuhloListItem(item: ItemBuhlo) {
         Image(painter = painterResource(id = item.picture),
             contentDescription = null,
             modifier = Modifier
-                .size(64.dp)
+                .size(84.dp)
                 .clip(RoundedCornerShape(10.dp)))
         Spacer(modifier = Modifier.width(24.dp))
         Column() {
@@ -49,8 +50,8 @@ fun BuhloListItem(item: ItemBuhlo) {
 }
 
 @Composable
-@Preview(showBackground = true)
+@Preview()
 fun previeItem(){
-    val item = ItemBuhlo(name = "Вино", picture = R.drawable.ic_vine, description = "для ценителей италии и франции")
+    val item = Category(name = "Вино", picture = R.drawable.ic_vine, description = "для ценителей италии и франции")
     BuhloListItem(item = item)
 }

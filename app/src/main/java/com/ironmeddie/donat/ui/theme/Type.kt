@@ -33,5 +33,20 @@ val Typography = Typography(
         letterSpacing = 0.5.sp
     ),
 
+    headlineLarge = TextStyle(
+        fontFamily = FontFamily(Font(R.font.montserat)),
+        fontWeight = FontWeight.W500,
+        fontSize = 15.sp,
+        letterSpacing = -(0.3).sp,
+        color = AppBlack
+    ),
+    titleSmall = TextStyle(
+        fontFamily = FontFamily(Font(R.font.montserat)),
+        fontWeight = FontWeight.W500,
+        fontSize = 8.sp,
+        letterSpacing = -(0.3).sp,
+        color = CategoryText
+    ),
+
 
     )

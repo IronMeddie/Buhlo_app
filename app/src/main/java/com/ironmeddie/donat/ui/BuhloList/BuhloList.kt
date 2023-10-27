@@ -10,10 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import com.ironmeddie.donat.R
-import com.ironmeddie.donat.models.ItemBuhlo
-
+import com.ironmeddie.donat.models.Category
 @Composable
-fun BuhloList(list: List<ItemBuhlo> = createlistOfBuhlo()){
+fun BuhloList(list: List<Category> = createlistOfBuhlo()){
     LazyColumn(modifier = Modifier.fillMaxSize()){
          items(list){
              BuhloListItem(item = it)
@@ -22,11 +21,11 @@ fun BuhloList(list: List<ItemBuhlo> = createlistOfBuhlo()){
     }
 }
 
-fun createlistOfBuhlo(): List<ItemBuhlo>{
+fun createlistOfBuhlo(): List<Category>{
     return listOf(
-        ItemBuhlo(name = "Вино", picture = R.drawable.ic_vine, description = "для ценителей италии и франции"),
-        ItemBuhlo(name = "Пиво", picture = R.drawable.ic_beer, description = "для ценителей темного и светлого, а также нефильтрованного"),
-        ItemBuhlo(name = "Виски", picture = R.drawable.ic_whiskey, description = "ну тут не помню, кажется любят пшеницу, а если бурбон, то кукурузу"),
+        Category(name = "Вино", picture = R.drawable.ic_vine, description = "для ценителей италии и франции"),
+        Category(name = "Пиво", picture = R.drawable.ic_beer, description = "для ценителей темного и светлого, а также нефильтрованного"),
+        Category(name = "Виски", picture = R.drawable.ic_whiskey, description = "ну тут не помню, кажется любят пшеницу, а если бурбон, то кукурузу"),
     )
 
 }
