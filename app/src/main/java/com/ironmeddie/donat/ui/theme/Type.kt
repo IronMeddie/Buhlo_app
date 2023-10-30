@@ -43,9 +43,9 @@ val Typography = Typography(
     titleSmall = TextStyle(
         fontFamily = FontFamily(Font(R.font.montserat)),
         fontWeight = FontWeight.W500,
-        fontSize = 8.sp,
+        fontSize = 10.sp,
         letterSpacing = -(0.3).sp,
-        color = CategoryText
+        color = GreyTextLoc
     ),
 
 
