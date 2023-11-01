@@ -6,29 +6,43 @@ import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ironmeddie.donat.ui.mainScrreen.components.CategoryRow
+import com.ironmeddie.donat.ui.mainScrreen.components.MyTextField
 import com.ironmeddie.donat.ui.mainScrreen.components.PartHeader
 import com.ironmeddie.donat.ui.mainScrreen.components.SearchPanel
+import com.ironmeddie.donat.ui.theme.GreyField
 import com.ironmeddie.donat.ui.theme.SearchField
 import com.ironmeddie.donat.utils.Constance
 
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MainScreen(navController: NavController
 , context: Context, viewModel: MainScreenViewModel = viewModel()) {
@@ -36,9 +50,15 @@ fun MainScreen(navController: NavController
     val categories = viewModel.categories.collectAsState().value
     val currentCategory = viewModel.currentcategory.collectAsState().value
     val search = viewModel.search.collectAsState().value
+    val summ = viewModel.summ.collectAsState().value
+    val currentMoney = viewModel.currentMoney.collectAsState().value
+    val refreshing = viewModel.isPullRefreshing.collectAsState().value
+    val refreshState = rememberPullRefreshState(refreshing, viewModel::pullRefresh)
 
-
-    Box() {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .pullRefresh(refreshState, true)) {
         LazyColumn() {
 
             item {
@@ -65,21 +85,63 @@ fun MainScreen(navController: NavController
             item { CategoryRow(categories, currentCategory){
                 viewModel.changeCategory(it)
             } }
-            item { Spacer(modifier = Modifier.height(56.dp)) }
-            item { Button(modifier = Modifier
-                .padding(horizontal = 24.dp)
-                .fillMaxWidth()
-                .height(36.dp),onClick = {
-                openIntent(context){
-                    openLink(context)
+            item {
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)) {
+                    Spacer(modifier = Modifier.height(96.dp))
+
+                    MyTextField(value = summ, hint = "сумма", onValueChange = viewModel::summ, modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(29.dp)
+                        .clip(MaterialTheme.shapes.medium)
+                        .background(GreyField))
+
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    Button(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(36.dp),onClick = {
+                        openIntent(context){
+                            openLink(context)
+                        }
+                        viewModel.updateMoney()
+                    }, enabled = summ != "") {
+                        Text(text = "Задонатить")
+                    }
                 }
-            }) {
-                Text(text = "Задонатить")
+
+                }
+            
+            item {
+            Spacer(modifier = Modifier.height(32.dp) )
+                Box(modifier = Modifier
+                    .padding(64.dp)
+                    .fillMaxWidth()
+                    .size(150.dp)
+                    .shadow(4.dp, CircleShape)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.background)
+
+                    , contentAlignment = Alignment.Center) {
+                    if (currentMoney.isNotBlank()){
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(text = "Баланс", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Text(text = currentMoney, style = MaterialTheme.typography.bodyLarge)
+
+                        }
+        }
+
+                    else CircularProgressIndicator()
             } }
+
 
 
         }
 
+    PullRefreshIndicator(refreshing, refreshState, Modifier.align(Alignment.TopCenter))
     }
 
 }

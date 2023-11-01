@@ -2,13 +2,17 @@ package com.ironmeddie.donat.ui.loginScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ironmeddie.donat.domain.NewCurrentUser
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class LogInViewModel (private val getUserByName: GetUserByName, private val currentUser: NewCurrentUser) : ViewModel() {
+class LogInViewModel (
+//    private val getUserByName: GetUserByName,
+    private val currentUser: NewCurrentUser
+) : ViewModel() {
 
     private val _firstName = MutableStateFlow("")
     val firstName = _firstName.asStateFlow()
@@ -20,18 +24,17 @@ class LogInViewModel (private val getUserByName: GetUserByName, private val curr
 
 
     fun logIn(){
-        viewModelScope.launch {
-           getUserByName(firstName = firstName.value).collectLatest {user->
-               if (user != null){
-                   _eventFLow.emit(Logged.Success)
-                   currentUser(user)
-               } else{
-                   _eventFLow.emit(Logged.Failure("User not exist"))
-               }
-           }
-
-
-        }
+//        viewModelScope.launch {
+//           getUserByName(firstName = firstName.value).collectLatest {user->
+//               if (user != null){
+//                   _eventFLow.emit(Logged.Success)
+//                   currentUser(user)
+//               } else{
+//                   _eventFLow.emit(Logged.Failure("User not exist"))
+//               }
+//           }
+//
+//        }
     }
 
     fun updateFirstName(str:String){

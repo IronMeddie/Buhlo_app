@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "560462816674",
+    "project_id": "deeplinkapp-f7297",
+    "storage_bucket": "deeplinkapp-f7297.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:560462816674:android:8d7e7eb5c2135039b53efb",
+        "android_client_info": {
+          "package_name": "com.ironmeddie.donat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "560462816674-jqgcfede72klvtoaoov8gn3mt176j6r9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ironmeddie.donat",
+            "certificate_hash": "543eb284f355f42feb93a9765193fd04724c11f4"
+          }
+        },
+        {
+          "client_id": "560462816674-m3ro17fps00cliie83gs5sgh1v81gli0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9kjupnDHy8LJ9ngs6zEK8bAoXPbrccIk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "560462816674-m3ro17fps00cliie83gs5sgh1v81gli0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

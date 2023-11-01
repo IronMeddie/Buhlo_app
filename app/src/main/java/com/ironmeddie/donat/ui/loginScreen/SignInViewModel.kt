@@ -2,13 +2,19 @@ package com.ironmeddie.donat.ui.loginScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ironmeddie.donat.domain.NewCurrentUser
+import com.ironmeddie.donat.models.User
+import com.ironmeddie.donat.utils.isEmail
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class SignInViewModel (private val insertUser: InsertUserToDB, private val currentUser: NewCurrentUser) : ViewModel() {
+class SignInViewModel (
+//    private val insertUser: InsertUserToDB,
+//    private val currentUser: NewCurrentUser
+) : ViewModel() {
 
     private val _firstName = MutableStateFlow("")
     val firstName = _firstName.asStateFlow()
@@ -31,9 +37,9 @@ class SignInViewModel (private val insertUser: InsertUserToDB, private val curre
                     avatar = ""
                 )
                 try {
-                    insertUser(user)
+//                    insertUser(user)
                     _eventFLow.emit(Logged.Success)
-                    currentUser(user)
+//                    currentUser(user)
                 }catch (e: Throwable){
                     e.message?.let {
                         if (it.contains("UNIQUE constraint failed"))

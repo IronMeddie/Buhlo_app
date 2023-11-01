@@ -19,8 +19,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,9 +35,11 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ironmeddie.donat.R
+import com.ironmeddie.donat.ui.mainScrreen.components.MyTextField
+import com.ironmeddie.donat.ui.navHost.navigateToSignUp
 import com.ironmeddie.donat.ui.theme.AppLink
 import com.ironmeddie.donat.ui.theme.GreyField
-import com.ironmeddie.donat.ui.theme.GreyText
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun SignInScreen(navController: NavController, viewModel: SignInViewModel = viewModel()) {
@@ -109,7 +114,9 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = view
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .clickable { navController.navigateToSignUp() }) {
+                    .clickable {
+                        navController.navigateToSignUp()
+                    }) {
                 Text(
                     text = stringResource(R.string.already_have_acc),
                     fontSize = 10.sp,
@@ -136,28 +143,7 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = view
 }
 
 
-@Composable
-fun MyTextField(
-    value: String,
-    modifier: Modifier = Modifier,
-    hint: String,
-    onValueChange: (String) -> Unit
-) {
-    Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        BasicTextField(
-            value = value, onValueChange = {
-                onValueChange(it)
-            }, modifier = Modifier
-                .matchParentSize()
-                .padding(horizontal = 16.dp, vertical = 6.dp),
-        )
-        if (value.isEmpty()) Text(
-            text = hint,
-            color = GreyText,
-            modifier = Modifier.align(Alignment.Center)
-        )
-    }
-}
+
 
 @Composable
 fun SignWith(IconRes: Int, text: String) {

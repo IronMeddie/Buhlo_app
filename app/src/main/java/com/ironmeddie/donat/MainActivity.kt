@@ -15,9 +15,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.ironmeddie.donat.ui.navHost.MainNavHost
 import com.ironmeddie.donat.ui.theme.DonatTheme
+import com.ironmeddie.donat.utils.activity
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        activity = this
         super.onCreate(savedInstanceState)
         setContent {
             DonatTheme {

@@ -57,6 +57,8 @@ fun CategoryItem(category: Category, isChoosed: Boolean = false, onClick : () ->
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
         .padding(horizontal = 8.dp)
         .width(52.dp)
+        .height(78.dp)
+        .clip(MaterialTheme.shapes.small)
         .background(if (isChoosed)GreyIconBack else MaterialTheme.colorScheme.background)
         .clickable { onClick() }) {
         Box(
