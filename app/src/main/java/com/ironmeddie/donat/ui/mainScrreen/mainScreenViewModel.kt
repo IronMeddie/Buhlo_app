@@ -9,16 +9,18 @@ import com.ironmeddie.donat.domain.getMainScreenData.getCurrentmoney
 import com.ironmeddie.donat.domain.getMainScreenData.updateMoneyValue
 import com.ironmeddie.donat.models.Category
 import com.ironmeddie.donat.utils.Constance
-import com.ironmeddie.donat.utils.di
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MainScreenViewModel(
-    private val useCase: getCategoriesUseCase = di.getMaiScreenUseCases(),
-    private val getMoney: getCurrentmoney = di.getCurrentMoney(),
-    private val updateMoneyValue: updateMoneyValue = di.updateMoneyUseCase()
+@HiltViewModel
+class MainScreenViewModel @Inject constructor(
+    private val useCase: getCategoriesUseCase,
+    private val getMoney: getCurrentmoney,
+    private val updateMoneyValue: updateMoneyValue
 ) : ViewModel() {
 
     private val _categories = MutableStateFlow(listOf<Category>())
@@ -51,7 +53,7 @@ class MainScreenViewModel(
 
             }
             getMoney().collectLatest {
-                _currentMoney.value = it
+                _currentMoney.value = it.money.toString()
                 _isPullRefreshing.value = false
             }
         }
@@ -64,7 +66,8 @@ class MainScreenViewModel(
 
     fun updateMoney(){
         viewModelScope.launch {
-            updateMoneyValue(summ.value.toDouble())
+
+            updateMoneyValue(summ.value.toDouble(), listOf(currentcategory.value) )
         }
     }
     fun changeCategory(category: Category) {

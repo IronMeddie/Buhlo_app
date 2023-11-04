@@ -1,11 +1,12 @@
-package com.ironmeddie.donat.data
+package com.ironmeddie.donat.data.firestoreDb
 
 import android.util.Log
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
-import com.ironmeddie.donat.data.firestoreDb.Money
 import com.ironmeddie.donat.models.Category
+import com.ironmeddie.donat.models.Transaction
 import com.ironmeddie.donat.models.User
 import com.ironmeddie.donat.ui.mainScrreen.components.getCategorys
 import com.ironmeddie.donat.utils.Constance
@@ -14,10 +15,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
-class RemoteData {
+class RemoteData: RemoteDataBase {
 
     private val db = Firebase.firestore
-    fun addCategory() {
+    override fun addCategory() {
         try {
 
             getCategorys().forEach {
@@ -45,12 +46,13 @@ class RemoteData {
         }
     }
 
-    suspend fun addTransaction(user: User, purchase: Double) {
+    override suspend fun addTransaction(user: User, purchase: Double,categories: List<Category>) {
         try {
             val transaction = hashMapOf(
                 "userID" to user.id,
                 "dateTime" to FieldValue.serverTimestamp(),
-                "revenue" to purchase
+                "revenue" to purchase,
+                "categories" to categories
             )
             db.collection("transactions")
                 .add(transaction)
@@ -65,19 +67,25 @@ class RemoteData {
             db.collection("money").document("money").update("money", FieldValue.increment(purchase))
                 .await()
 
+            val event : HashMap<String,Any> = hashMapOf(
+                "userID" to user.id,
+                "revenue" to purchase
+            )
+            AppMetrica.reportEvent("transaction", event)
+
         } catch (t: Throwable) {
             Log.d(Constance.TAG, t.message.toString())
             AppMetrica.reportError("firebase", t)
         }
     }
 
-    fun getCurrentMoney() = flow {
+    override fun getCurrentMoney(): Flow<Money> = flow {
         try {
             val money = db.collection("money")
                 .document("money")
                 .get()
-                .await()["money"]
-            emit(money.toString())
+                .await().toObject<Money>()
+            emit(money ?: Money())
 
         } catch (t: Throwable) {
             Log.d(Constance.TAG, t.message.toString())
@@ -86,7 +94,7 @@ class RemoteData {
     }
 
 
-    fun getCategoryes(): Flow<List<Category>> {
+    override fun getCategoryes(): Flow<List<Category>> {
 
         return flow<List<Category>> {
             try {
@@ -104,5 +112,22 @@ class RemoteData {
         }
 
 
+    }
+
+    override fun getTransactions(): Flow<List<Transaction>> {
+        return flow<List<Transaction>> {
+            try {
+                val list: List<Transaction> = db
+                    .collection("transactions")
+                    .get()
+                    .await().toObjects(Transaction::class.java)
+
+                emit(list)
+            } catch (t: Throwable) {
+                Log.d(Constance.TAG, t.message.toString())
+                AppMetrica.reportError("firebase", t)
+            }
+
+        }
     }
 }

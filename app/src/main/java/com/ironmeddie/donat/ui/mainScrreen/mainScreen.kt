@@ -31,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ironmeddie.donat.ui.mainScrreen.components.CategoryRow
@@ -45,7 +46,7 @@ import com.ironmeddie.donat.utils.Constance
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MainScreen(navController: NavController
-, context: Context, viewModel: MainScreenViewModel = viewModel()) {
+, context: Context, viewModel: MainScreenViewModel = hiltViewModel()) {
 
     val categories = viewModel.categories.collectAsState().value
     val currentCategory = viewModel.currentcategory.collectAsState().value

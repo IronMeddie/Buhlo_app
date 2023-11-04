@@ -5,15 +5,18 @@ import androidx.lifecycle.viewModelScope
 import com.ironmeddie.donat.domain.NewCurrentUser
 import com.ironmeddie.donat.models.User
 import com.ironmeddie.donat.utils.isEmail
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SignInViewModel (
+@HiltViewModel
+class SignInViewModel @Inject constructor(
 //    private val insertUser: InsertUserToDB,
-//    private val currentUser: NewCurrentUser
+    private val currentUser: NewCurrentUser
 ) : ViewModel() {
 
     private val _firstName = MutableStateFlow("")

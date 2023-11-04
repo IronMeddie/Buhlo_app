@@ -3,13 +3,16 @@ package com.ironmeddie.donat.ui.loginScreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ironmeddie.donat.domain.NewCurrentUser
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LogInViewModel (
+@HiltViewModel
+class LogInViewModel @Inject constructor(
 //    private val getUserByName: GetUserByName,
     private val currentUser: NewCurrentUser
 ) : ViewModel() {
@@ -25,6 +28,7 @@ class LogInViewModel (
 
     fun logIn(){
 //        viewModelScope.launch {
+
 //           getUserByName(firstName = firstName.value).collectLatest {user->
 //               if (user != null){
 //                   _eventFLow.emit(Logged.Success)

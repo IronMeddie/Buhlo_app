@@ -1,10 +1,25 @@
 package com.ironmeddie.donat
 
 import android.app.Application
+import android.util.Log
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.ktx.initialize
+import com.ironmeddie.donat.domain.SyncDataUseCase
+import com.ironmeddie.donat.utils.Constance
+import dagger.hilt.android.HiltAndroidApp
 import io.appmetrica.analytics.AppMetrica
 import io.appmetrica.analytics.AppMetricaConfig
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@HiltAndroidApp
 class BApp: Application() {
+
+
 
     override fun onCreate() {
         super.onCreate()
@@ -13,6 +28,12 @@ class BApp: Application() {
         AppMetrica.activate(this, config)
 
         AppMetrica.enableActivityAutoTracking(this)
-//
+        AppMetrica.sendEventsBuffer()
+
+
+
+
+
+
     }
 }
