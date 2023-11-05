@@ -30,7 +30,13 @@ class LogInViewModel @Inject constructor(
     fun logIn(){
         viewModelScope.launch {
             logIn(firstName.value,password.value).collectLatest {
-                if (it is AuthResult.Success) _eventFLow.emit(Logged.Success)
+
+                when (it){
+                    is AuthResult.Success -> _eventFLow.emit(Logged.Success)
+                    is AuthResult.Failure -> _eventFLow.emit(Logged.Failure(it.message))
+                    else -> Unit
+                }
+
             }
         }
     }

@@ -73,7 +73,6 @@ class Auth() : Authorization {
 
             val profileUpdates = userProfileChangeRequest {
                 displayName = user.firstName
-//                photoUri = Uri.parse()
             }
 
             firebaseUser!!.updateProfile(profileUpdates).await()
@@ -90,7 +89,5 @@ sealed class AuthResult {
     object Success : AuthResult()
     object Loading : AuthResult()
 
-    //    object logInSuccess: AuthResult()
-//    object regSuccess: AuthResult()
     data class Failure(val message: String) : AuthResult()
 }

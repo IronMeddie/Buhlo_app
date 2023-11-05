@@ -41,7 +41,13 @@ class SignInViewModel @Inject constructor(
                     avatar = ""
                 )
                registration(_email.value, _lastName.value, user).collectLatest {
-                   if (it is AuthResult.Success)_eventFLow.emit(Logged.Success)
+
+                   when(it){
+                       is AuthResult.Success ->_eventFLow.emit(Logged.Success)
+                       is AuthResult.Failure ->_eventFLow.emit(Logged.Failure(it.message))
+                       else -> Unit
+                   }
+
                }
 
 

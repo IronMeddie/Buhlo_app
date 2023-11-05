@@ -81,13 +81,15 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
                     .background(GreyField), stringResource(R.string.first_name)
             ) {  viewModel.updateField(UpdateField.First(it))}
             Spacer(modifier = Modifier.height(35.dp))
-            MyTextField(
+            MyPasswordField(
                 password, modifier = Modifier
                     .fillMaxWidth()
                     .height(29.dp)
                     .clip(MaterialTheme.shapes.medium)
-                    .background(GreyField), stringResource(R.string.password)
-            ) { viewModel.updateField(UpdateField.Last(it))}
+                    .background(GreyField), stringResource(R.string.password),
+                {viewModel.updateField(UpdateField.Last(it))}
+            )
+
             Spacer(modifier = Modifier.height(35.dp))
             MyTextField(
                 email, modifier = Modifier
