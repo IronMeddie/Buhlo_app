@@ -11,6 +11,7 @@ import com.ironmeddie.donat.data.firestoreDb.RemoteDataBase
 import com.ironmeddie.donat.domain.NewCurrentUser
 import com.ironmeddie.donat.domain.getMainScreenData.getCategoriesUseCase
 import com.ironmeddie.donat.domain.getMainScreenData.getCurrentmoney
+import com.ironmeddie.donat.domain.getMainScreenData.getTransaction
 import com.ironmeddie.donat.domain.getMainScreenData.updateMoneyValue
 import dagger.Module
 import dagger.Provides
@@ -48,6 +49,9 @@ object UseCasesModule {
 
     @Provides
     fun providesCurrentMoney(db: RemoteDataBase) = getCurrentmoney(db)
+
+    @Provides
+    fun providesGetTransactions(db: AppDatabase) = getTransaction(db)
     @Provides
     fun providesupdateMoneyUseCase(db: RemoteDataBase, auth: Authorization) = updateMoneyValue(db,auth)
 

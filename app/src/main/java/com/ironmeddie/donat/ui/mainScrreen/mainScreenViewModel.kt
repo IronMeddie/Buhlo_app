@@ -6,8 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ironmeddie.donat.domain.getMainScreenData.getCategoriesUseCase
 import com.ironmeddie.donat.domain.getMainScreenData.getCurrentmoney
+import com.ironmeddie.donat.domain.getMainScreenData.getTransaction
 import com.ironmeddie.donat.domain.getMainScreenData.updateMoneyValue
 import com.ironmeddie.donat.models.Category
+import com.ironmeddie.donat.models.Transaction
 import com.ironmeddie.donat.utils.Constance
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,11 +22,15 @@ import javax.inject.Inject
 class MainScreenViewModel @Inject constructor(
     private val useCase: getCategoriesUseCase,
     private val getMoney: getCurrentmoney,
-    private val updateMoneyValue: updateMoneyValue
+    private val updateMoneyValue: updateMoneyValue,
+    private val getTransactions: getTransaction
 ) : ViewModel() {
 
     private val _categories = MutableStateFlow(listOf<Category>())
     val categories = _categories.asStateFlow()
+
+    private val _transactions = MutableStateFlow(listOf<Transaction>())
+    val transactions = _transactions.asStateFlow()
 
     private val _currentcategory = MutableStateFlow(Category())
     val currentcategory = _currentcategory.asStateFlow()
@@ -55,6 +61,9 @@ class MainScreenViewModel @Inject constructor(
             getMoney().collectLatest {
                 _currentMoney.value = it.money.toString()
                 _isPullRefreshing.value = false
+            }
+            getTransactions().collectLatest {
+                _transactions.value = it
             }
         }
     }

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
@@ -38,6 +39,7 @@ import com.ironmeddie.donat.ui.mainScrreen.components.CategoryRow
 import com.ironmeddie.donat.ui.mainScrreen.components.MyTextField
 import com.ironmeddie.donat.ui.mainScrreen.components.PartHeader
 import com.ironmeddie.donat.ui.mainScrreen.components.SearchPanel
+import com.ironmeddie.donat.ui.mainScrreen.components.TransactionItem
 import com.ironmeddie.donat.ui.theme.GreyField
 import com.ironmeddie.donat.ui.theme.SearchField
 import com.ironmeddie.donat.utils.Constance
@@ -49,6 +51,7 @@ fun MainScreen(navController: NavController
 , context: Context, viewModel: MainScreenViewModel = hiltViewModel()) {
 
     val categories = viewModel.categories.collectAsState().value
+    val transactions = viewModel.transactions.collectAsState().value
     val currentCategory = viewModel.currentcategory.collectAsState().value
     val search = viewModel.search.collectAsState().value
     val summ = viewModel.summ.collectAsState().value
@@ -137,6 +140,10 @@ fun MainScreen(navController: NavController
 
                     else CircularProgressIndicator()
             } }
+
+            items(transactions){
+                TransactionItem(transaction = it)
+            }
 
 
 
