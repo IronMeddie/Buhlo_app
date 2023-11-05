@@ -13,10 +13,12 @@ import com.ironmeddie.donat.models.Transaction
 import com.ironmeddie.donat.models.User
 import com.ironmeddie.donat.ui.mainScrreen.components.getCategorys
 import com.ironmeddie.donat.utils.Constance
+import com.ironmeddie.donat.utils.toTimeFormat
 import io.appmetrica.analytics.AppMetrica
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
+import java.time.format.DateTimeFormatter
 
 class RemoteData: RemoteDataBase {
 
@@ -52,7 +54,8 @@ class RemoteData: RemoteDataBase {
     override suspend fun addTransaction(user: User, purchase: Double,categories: List<Category>) {
         try {
             val transaction = hashMapOf(
-                "userID" to user.id,
+                "email" to user.email,
+                "firstName" to user.firstName,
                 "dateTime" to FieldValue.serverTimestamp(),
                 "money" to purchase,
                 "categories" to categories.map { it.name }
@@ -119,15 +122,13 @@ class RemoteData: RemoteDataBase {
                     .get()
                     .await().map {
 
-//                        val cat= it.data["categories"]
-//                        Log.d("checkCode categories",cat.toString())
                     Transaction(
-                        userName  = it.data["username"].toString(),
-                        userID = it.data["userID"].toString(),
-                        dateTime = (it.data["dateTime"] as Timestamp).toDate().toString(),
+                        userName  = it.data["firstName"].toString(),
+                        email = it.data["email"].toString(),
+                        dateTime = (it.data["dateTime"] as Timestamp).toTimeFormat(),
                         money = it.data["money"].toString(),
                         categories =  emptyList(),
-                        id = it.id
+                        id = it.id,
                     )
                     }
 

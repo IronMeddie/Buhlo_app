@@ -80,7 +80,7 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hi
 
                 scope.launch {
                     selectedImageUri = uri
-                    viewModel.saveAvatar(uri)
+                    viewModel.updateUser(uri,"")
                 }
             })
 
@@ -91,42 +91,42 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hi
         LazyColumn(modifier = Modifier.padding(it)) {
             item { ProfileTopBar() { navController.navigateUp() } }
 
-            item {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    AsyncImage(
-                        model = if (selectedImageUri == null) {
-                            if (!user?.avatar.isNullOrBlank()) user?.avatar else R.drawable.avatar
-                        } else selectedImageUri, contentDescription = "user avatar",
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .size(61.dp)
-                            .border(1.dp, Border, CircleShape), contentScale = ContentScale.Crop
-                    )
-                    Text(
-                        text = stringResource(R.string.change_photo),
-                        fontWeight = FontWeight.W500,
-                        fontSize = 8.sp,
-                        color = OnotherOneGrey,
-                        modifier = Modifier.clickable {
-                            contract.launch(
-                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
-                            )
-                        }
-                    )
-                    Spacer(modifier = Modifier.height(17.dp))
-                    Text(
-                        text = stringResource(R.string.name),
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontSize = 15.sp,
-                        color = NameProfile
-                    )
-                }
-            }
-
-            item { Spacer(modifier = Modifier.height(36.dp)) }
+//            item {
+//                Column(
+//                    modifier = Modifier.fillMaxWidth(),
+//                    horizontalAlignment = Alignment.CenterHorizontally
+//                ) {
+//                    AsyncImage(
+//                        model = if (selectedImageUri == null) {
+//                            if (!user?.avatar.isNullOrBlank()) user?.avatar else R.drawable.avatar
+//                        } else selectedImageUri, contentDescription = "user avatar",
+//                        modifier = Modifier
+//                            .clip(CircleShape)
+//                            .size(61.dp)
+//                            .border(1.dp, Border, CircleShape), contentScale = ContentScale.Crop
+//                    )
+//                    Text(
+//                        text = stringResource(R.string.change_photo),
+//                        fontWeight = FontWeight.W500,
+//                        fontSize = 8.sp,
+//                        color = OnotherOneGrey,
+//                        modifier = Modifier.clickable {
+//                            contract.launch(
+//                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
+//                            )
+//                        }
+//                    )
+//                    Spacer(modifier = Modifier.height(17.dp))
+//                    Text(
+//                        text = stringResource(R.string.name),
+//                        style = MaterialTheme.typography.headlineSmall,
+//                        fontSize = 15.sp,
+//                        color = NameProfile
+//                    )
+//                }
+//            }
+//
+//            item { Spacer(modifier = Modifier.height(36.dp)) }
 //            item {
 //                Button(
 //                    onClick = {

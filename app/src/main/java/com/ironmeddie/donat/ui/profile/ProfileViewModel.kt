@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.ironmeddie.donat.data.auth.AuthResult
 import com.ironmeddie.donat.domain.auth.CurrentUser
 import com.ironmeddie.donat.domain.auth.SignOut
+import com.ironmeddie.donat.domain.auth.changeProfileData
 import com.ironmeddie.donat.models.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -20,7 +21,8 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val signOut: SignOut,
 //    private val updateAvatar: UpdateAvatar,
-    private val currentUser: CurrentUser
+    private val currentUser: CurrentUser,
+    private val changeProfileData: changeProfileData
 ) : ViewModel() {
 
     private val _user = MutableStateFlow<User?>(null)
@@ -48,11 +50,9 @@ class ProfileViewModel @Inject constructor(
 //        }.launchIn(viewModelScope)
     }
 
-    fun saveAvatar(uri: Uri) {
-//        viewModelScope.launch {
-//            val newUser = _user.value?.copy(avatar = uri.toString())
-//            updateAvatar(newUser ?: return@launch)
-//        }
+    fun updateUser(uri: Uri?, name: String) {
+        viewModelScope.launch {
+        }
     }
 
 

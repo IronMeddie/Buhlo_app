@@ -63,7 +63,7 @@ fun MainScreen(navController: NavController
     val refreshing = viewModel.isPullRefreshing.collectAsState().value
     val refreshState = rememberPullRefreshState(refreshing, viewModel::pullRefresh)
 
-    Scaffold(topBar = { TopBar(uri = ""){ navController.navigateToProfile()} }) {
+    Scaffold(topBar = { TopBar(){ navController.navigateToProfile()} }) {
 
 
         Box(

@@ -45,7 +45,7 @@ fun SignUpScreen(navController: NavController, viewModel : LogInViewModel = hilt
                 }
                 is Logged.Failure->{
                     isError = logged.message
-                    delay(2000)
+                    delay(4000)
                     isError = ""
                 }
             }
@@ -66,7 +66,7 @@ fun SignUpScreen(navController: NavController, viewModel : LogInViewModel = hilt
                     .fillMaxWidth()
                     .height(29.dp)
                     .clip(MaterialTheme.shapes.medium)
-                    .background(GreyField), stringResource(R.string.first_name),
+                    .background(GreyField), stringResource(R.string.email),
                 onValueChange = viewModel::updateFirstName
             )
             Spacer(modifier = Modifier.height(35.dp))
