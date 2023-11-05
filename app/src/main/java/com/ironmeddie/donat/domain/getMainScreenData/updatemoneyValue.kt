@@ -13,7 +13,6 @@ class updateMoneyValue @Inject constructor(private val database: RemoteDataBase,
 
         authData.getCurrent().collectLatest {
             val user = User(
-                id = it?.tenantId ?: "",
                 firstName = it?.displayName ?: "",
                 email = it?.email ?: ""
             )

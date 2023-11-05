@@ -9,6 +9,7 @@ interface Authorization {
     fun getCurrent(): Flow<FirebaseUser?>
 
     fun logIn(login: String, password: String) : Flow<AuthResult>
+    fun changeUserInfo(user:User) : Flow<AuthResult>
 
     fun logOut() : Flow<AuthResult>
 

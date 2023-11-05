@@ -36,7 +36,7 @@ fun SignUpScreen(navController: NavController, viewModel : LogInViewModel = hilt
     val firstName = viewModel.firstName.collectAsState().value
     val password = viewModel.password.collectAsState().value
     var isError by remember{ mutableStateOf("") }
-    LaunchedEffect(key1 = true){
+    LaunchedEffect(key1 = viewModel.eventFLow){
         viewModel.eventFLow.collectLatest { logged ->
             when(logged){
                 is Logged.Success ->{

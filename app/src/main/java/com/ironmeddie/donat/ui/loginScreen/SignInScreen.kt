@@ -51,7 +51,7 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
 
     var isError by remember{ mutableStateOf("") }
 
-    LaunchedEffect(key1 = true){
+    LaunchedEffect(key1 = viewModel.eventFLow){
         viewModel.eventFLow.collectLatest { logged ->
             when(logged){
                 is Logged.Success ->{
