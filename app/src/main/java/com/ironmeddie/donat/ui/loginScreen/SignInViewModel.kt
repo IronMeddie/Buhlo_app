@@ -2,7 +2,8 @@ package com.ironmeddie.donat.ui.loginScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ironmeddie.donat.domain.NewCurrentUser
+import com.ironmeddie.donat.data.auth.AuthResult
+import com.ironmeddie.donat.domain.auth.Registration
 import com.ironmeddie.donat.models.User
 import com.ironmeddie.donat.utils.isEmail
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -10,13 +11,13 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
-//    private val insertUser: InsertUserToDB,
-    private val currentUser: NewCurrentUser
+    private val registration: Registration
 ) : ViewModel() {
 
     private val _firstName = MutableStateFlow("")
@@ -39,17 +40,11 @@ class SignInViewModel @Inject constructor(
                     password = "",
                     avatar = ""
                 )
-                try {
-//                    insertUser(user)
-                    _eventFLow.emit(Logged.Success)
-//                    currentUser(user)
-                }catch (e: Throwable){
-                    e.message?.let {
-                        if (it.contains("UNIQUE constraint failed"))
-                            _eventFLow.emit(Logged.Failure("User with firstname ${firstName.value} already exist. Do you want to log in?"))
-                    }
+               registration(_email.value, _lastName.value, user).collectLatest {
+                   if (it is AuthResult.Success)_eventFLow.emit(Logged.Success)
+               }
 
-                }
+
             }else{
                 _eventFLow.emit(Logged.Failure("incorrect email"))
             }

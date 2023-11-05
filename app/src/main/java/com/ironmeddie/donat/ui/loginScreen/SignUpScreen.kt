@@ -19,17 +19,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ironmeddie.donat.R
 import com.ironmeddie.donat.ui.mainScrreen.components.MyTextField
+import com.ironmeddie.donat.ui.navHost.navigateToMainScreen
 import com.ironmeddie.donat.ui.theme.GreyField
 import com.ironmeddie.donat.ui.theme.GreyText
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun SignUpScreen(navController: NavController, viewModel : LogInViewModel = viewModel()) {
+fun SignUpScreen(navController: NavController, viewModel : LogInViewModel = hiltViewModel()) {
 
     val firstName = viewModel.firstName.collectAsState().value
     val password = viewModel.password.collectAsState().value
@@ -39,7 +41,7 @@ fun SignUpScreen(navController: NavController, viewModel : LogInViewModel = view
             when(logged){
                 is Logged.Success ->{
                     Log.d("checkCode",  "Logged successful, navigating to mainScreen")
-//                    navController.navigateToMainScreen()
+                    navController.navigateToMainScreen()
                 }
                 is Logged.Failure->{
                     isError = logged.message

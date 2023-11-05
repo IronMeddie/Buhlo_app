@@ -8,13 +8,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.ironmeddie.donat.ui.Screens
+import com.ironmeddie.donat.ui.splash.SplashScreen
 import com.ironmeddie.donat.ui.loginScreen.SignInScreen
 import com.ironmeddie.donat.ui.loginScreen.SignUpScreen
 import com.ironmeddie.donat.ui.mainScrreen.MainScreen
+import com.ironmeddie.donat.ui.profile.ProfileScreen
 
 @Composable
 fun MainNavHost(navController: NavHostController, context: Context){
-    NavHost(navController = navController, startDestination = Screens.MainGraph){
+    NavHost(navController = navController, startDestination = Screens.SplashNav){
 
         navigation(startDestination = Screens.SignIn, route = Screens.LoginGraph) {
             composable(Screens.SignIn) {
@@ -27,6 +29,15 @@ fun MainNavHost(navController: NavHostController, context: Context){
         navigation(startDestination = Screens.MAIN_SCREEN, route = Screens.MainGraph) {
             composable(route = Screens.MAIN_SCREEN){
                 MainScreen(navController,context)
+            }
+            composable(route= Screens.ProfileScreen){
+                ProfileScreen(navController = navController)
+            }
+        }
+
+        navigation(startDestination = Screens.SplashScreen, route = Screens.SplashNav){
+            composable(route = Screens.SplashScreen){
+                SplashScreen(navController)
             }
         }
     }

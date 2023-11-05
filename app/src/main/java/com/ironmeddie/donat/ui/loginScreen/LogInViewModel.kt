@@ -2,43 +2,37 @@ package com.ironmeddie.donat.ui.loginScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ironmeddie.donat.domain.NewCurrentUser
+import com.ironmeddie.donat.data.auth.AuthResult
+import com.ironmeddie.donat.domain.auth.LogIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LogInViewModel @Inject constructor(
-//    private val getUserByName: GetUserByName,
-    private val currentUser: NewCurrentUser
+    private val logIn: LogIn
 ) : ViewModel() {
 
     private val _firstName = MutableStateFlow("")
     val firstName = _firstName.asStateFlow()
+
     private val _password = MutableStateFlow("")
     val password = _password.asStateFlow()
 
     private val _eventFLow = MutableSharedFlow<Logged>()
     val eventFLow = _eventFLow.asSharedFlow()
 
-
     fun logIn(){
-//        viewModelScope.launch {
-
-//           getUserByName(firstName = firstName.value).collectLatest {user->
-//               if (user != null){
-//                   _eventFLow.emit(Logged.Success)
-//                   currentUser(user)
-//               } else{
-//                   _eventFLow.emit(Logged.Failure("User not exist"))
-//               }
-//           }
-//
-//        }
+        viewModelScope.launch {
+            logIn(firstName.value,password.value).collectLatest {
+                if (it is AuthResult.Success) _eventFLow.emit(Logged.Success)
+            }
+        }
     }
 
     fun updateFirstName(str:String){

@@ -5,6 +5,7 @@ import android.content.IntentSender
 import android.util.Log
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
@@ -24,7 +25,15 @@ class Auth() : Authorization {
     private lateinit var signInRequest: BeginSignInRequest
     private val db = Firebase.firestore
 
-    override var currentUser = auth.getCurrentUser()
+
+
+        override fun getCurrent() = flow<FirebaseUser?> {
+            val currentUser = auth.getCurrentUser()
+
+            emit(currentUser)
+        }
+
+
 
     fun request(){
 //        oneTapClient = Identity.getSignInClient(activity)
@@ -122,6 +131,7 @@ class Auth() : Authorization {
 
 sealed class AuthResult{
     object Success: AuthResult()
+    object Loading: AuthResult()
 //    object logInSuccess: AuthResult()
 //    object regSuccess: AuthResult()
     data class Failure(val message: String): AuthResult()

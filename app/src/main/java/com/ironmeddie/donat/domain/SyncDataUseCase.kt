@@ -25,7 +25,6 @@ class SyncDataUseCase @Inject constructor(
             db.currentMoneyDao().insert(money.toEntity())
             remoteDB.getTransactions().flatMapLatest { transactions ->
                 Log.d("checkCode","test transactons")
-                db.transactionDao().deleteAll()
                 db.transactionDao().insertAll(transactions.map { transaction ->
                     db.transactionPayloadDao()
                         .addAll(transaction.categories.map { it.toTransactionPayload(transaction.id) })

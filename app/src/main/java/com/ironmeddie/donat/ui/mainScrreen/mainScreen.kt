@@ -22,7 +22,9 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -35,17 +37,19 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.ironmeddie.donat.ui.TopBar
 import com.ironmeddie.donat.ui.mainScrreen.components.CategoryRow
 import com.ironmeddie.donat.ui.mainScrreen.components.MyTextField
 import com.ironmeddie.donat.ui.mainScrreen.components.PartHeader
 import com.ironmeddie.donat.ui.mainScrreen.components.SearchPanel
 import com.ironmeddie.donat.ui.mainScrreen.components.TransactionItem
+import com.ironmeddie.donat.ui.navHost.navigateToProfile
 import com.ironmeddie.donat.ui.theme.GreyField
 import com.ironmeddie.donat.ui.theme.SearchField
 import com.ironmeddie.donat.utils.Constance
 
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(navController: NavController
 , context: Context, viewModel: MainScreenViewModel = hiltViewModel()) {
@@ -59,111 +63,135 @@ fun MainScreen(navController: NavController
     val refreshing = viewModel.isPullRefreshing.collectAsState().value
     val refreshState = rememberPullRefreshState(refreshing, viewModel::pullRefresh)
 
-    Box(
-        Modifier
-            .fillMaxSize()
-            .pullRefresh(refreshState, true)) {
-        LazyColumn() {
+    Scaffold(topBar = { TopBar(uri = ""){ navController.navigateToProfile()} }) {
 
-            item {
-                SearchPanel(
-                    value = search,
-                    modifier = Modifier
-                        .padding(vertical = 9.dp, horizontal = 26.dp)
-                        .clip(MaterialTheme.shapes.medium)
-                        .background(SearchField)
-                        .fillMaxWidth(),
-                    hint = "поиск",
-                    onValueChange = {viewModel.search(it)}
+
+        Box(
+            Modifier
+                .fillMaxSize()
+                .pullRefresh(refreshState, true)
+                .padding(it)
+        ) {
+            LazyColumn() {
+
+                item {
+                    SearchPanel(
+                        value = search,
+                        modifier = Modifier
+                            .padding(vertical = 9.dp, horizontal = 26.dp)
+                            .clip(MaterialTheme.shapes.medium)
+                            .background(SearchField)
+                            .fillMaxWidth(),
+                        hint = "поиск",
+                        onValueChange = { viewModel.search(it) }
                     )
 
 
-            }
-            item {
-                Spacer(modifier = Modifier.height(12.dp) )
-                PartHeader("Категории"){
+                }
+                item {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    PartHeader("Категории") {
+
+                    }
+                }
+                item { Spacer(modifier = Modifier.height(22.dp)) }
+                item {
+                    CategoryRow(categories, currentCategory) {
+                        viewModel.changeCategory(it)
+                    }
+                }
+                item {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp)
+                    ) {
+                        Spacer(modifier = Modifier.height(96.dp))
+
+                        MyTextField(
+                            value = summ,
+                            hint = "сумма",
+                            onValueChange = viewModel::summ,
+                            modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(29.dp)
+                                .clip(MaterialTheme.shapes.medium)
+                                .background(GreyField)
+                        )
+
+                        Spacer(modifier = Modifier.height(32.dp))
+
+                        Button(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(36.dp), onClick = {
+                                openIntent(context) {
+                                    openLink(context)
+                                }
+                                viewModel.updateMoney()
+                            }, enabled = summ != ""
+                        ) {
+                            Text(text = "Задонатить")
+                        }
+                    }
 
                 }
-            }
-            item { Spacer(modifier = Modifier.height(22.dp)) }
-            item { CategoryRow(categories, currentCategory){
-                viewModel.changeCategory(it)
-            } }
-            item {
-                Column(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp)) {
-                    Spacer(modifier = Modifier.height(96.dp))
 
-                    MyTextField(value = summ, hint = "сумма", onValueChange = viewModel::summ, modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(29.dp)
-                        .clip(MaterialTheme.shapes.medium)
-                        .background(GreyField))
-
+                item {
                     Spacer(modifier = Modifier.height(32.dp))
+                    Box(
+                        modifier = Modifier
+                            .padding(64.dp)
+                            .fillMaxWidth()
+                            .size(150.dp)
+                            .shadow(4.dp, CircleShape)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.background),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (currentMoney.isNotBlank()) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(
+                                    text = "Баланс",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                                Spacer(modifier = Modifier.height(12.dp))
+                                Text(
+                                    text = currentMoney,
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
 
-                    Button(modifier = Modifier
-                        .fillMaxWidth()
-                        .height(36.dp),onClick = {
-                        openIntent(context){
-                            openLink(context)
-                        }
-                        viewModel.updateMoney()
-                    }, enabled = summ != "") {
-                        Text(text = "Задонатить")
+                            }
+                        } else CircularProgressIndicator()
                     }
                 }
 
+                items(transactions, key = { it.id }) {
+                    TransactionItem(transaction = it)
                 }
-            
-            item {
-            Spacer(modifier = Modifier.height(32.dp) )
-                Box(modifier = Modifier
-                    .padding(64.dp)
-                    .fillMaxWidth()
-                    .size(150.dp)
-                    .shadow(4.dp, CircleShape)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.background)
 
-                    , contentAlignment = Alignment.Center) {
-                    if (currentMoney.isNotBlank()){
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(text = "Баланс", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
-                            Spacer(modifier = Modifier.height(12.dp))
-                            Text(text = currentMoney, style = MaterialTheme.typography.bodyLarge)
 
-                        }
-        }
-
-                    else CircularProgressIndicator()
-            } }
-
-            items(transactions, key = {it.id}){
-                TransactionItem(transaction = it)
             }
 
-
-
+            PullRefreshIndicator(refreshing, refreshState, Modifier.align(Alignment.TopCenter))
         }
 
-    PullRefreshIndicator(refreshing, refreshState, Modifier.align(Alignment.TopCenter))
     }
-
 }
+    fun openIntent(context: Context, other: () -> Unit) {
+        try {
+            val uri =
+                "intent://ru.sberbankmobile/payments/p2p?source=QR_FROM_SELF_EMPLOYED_EXTERNAL&type=phone_number&requisiteNumber=79254582814&external_source=pbpn-_--_--_--_--_--_-_y_1698677837122447754_d_17334569-840c-4138-93a9-1bad10675fe9_g_0.0"
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse(uri)
+            startActivity(context, intent, null)
+        } catch (e: Throwable) {
+            Log.d(Constance.TAG, e.message.toString())
+            other()
+        }
 
-fun openIntent(context: Context, other: () -> Unit){
-    try {
-        val uri = "intent://ru.sberbankmobile/payments/p2p?source=QR_FROM_SELF_EMPLOYED_EXTERNAL&type=phone_number&requisiteNumber=79254582814&external_source=pbpn-_--_--_--_--_--_-_y_1698677837122447754_d_17334569-840c-4138-93a9-1bad10675fe9_g_0.0"
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.data = Uri.parse(uri)
-        startActivity(context, intent, null)
-    }catch (e: Throwable){
-        Log.d(Constance.TAG, e.message.toString())
-        other()
-    }
 
 }
 

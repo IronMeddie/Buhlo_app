@@ -15,7 +15,11 @@ fun NavController.navigateToMainScreen(
     this.navigate(Screens.MainGraph, navOptions)
 }
 
-fun NavController.navigateToLoginScreen(nanOptions: NavOptions? = NavOptions.Builder().setPopUpTo(this.graph.id, true, false)
+fun NavController.navigateToLoginScreen(navOptions: NavOptions? = NavOptions.Builder().setPopUpTo(this.graph.id, true, false)
     .setLaunchSingleTop(true).build()) {
-    this.navigate(Screens.LoginGraph, nanOptions)
+    this.navigate(Screens.LoginGraph, navOptions)
+}
+
+fun NavController.navigateToProfile(){
+    this.navigate(Screens.ProfileScreen)
 }

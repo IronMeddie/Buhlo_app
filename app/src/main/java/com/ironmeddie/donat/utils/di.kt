@@ -8,7 +8,6 @@ import com.ironmeddie.donat.data.auth.Auth
 import com.ironmeddie.donat.data.auth.Authorization
 import com.ironmeddie.donat.data.database.AppDatabase
 import com.ironmeddie.donat.data.firestoreDb.RemoteDataBase
-import com.ironmeddie.donat.domain.NewCurrentUser
 import com.ironmeddie.donat.domain.SyncDataUseCase
 import com.ironmeddie.donat.domain.getMainScreenData.getCurrentmoney
 import dagger.Module
@@ -56,8 +55,6 @@ object UseCasesModule {
 
     @Provides
     fun providesSynch(remoteDb: RemoteDataBase, db: AppDatabase) = SyncDataUseCase(db,remoteDb)
-    @Provides
-    fun providesLodIn(db: RemoteDataBase, auth: Authorization) = NewCurrentUser()
 
 }
 

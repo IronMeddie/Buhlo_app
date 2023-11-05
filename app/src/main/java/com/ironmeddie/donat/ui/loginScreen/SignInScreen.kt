@@ -32,19 +32,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ironmeddie.donat.R
 import com.ironmeddie.donat.ui.mainScrreen.components.MyTextField
+import com.ironmeddie.donat.ui.navHost.navigateToMainScreen
 import com.ironmeddie.donat.ui.navHost.navigateToSignUp
 import com.ironmeddie.donat.ui.theme.AppLink
 import com.ironmeddie.donat.ui.theme.GreyField
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun SignInScreen(navController: NavController, viewModel: SignInViewModel = viewModel()) {
+fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hiltViewModel()) {
     val firstName = viewModel.firstName.collectAsState().value
-    val lastName = viewModel.lastName.collectAsState().value
+    val password = viewModel.lastName.collectAsState().value
     val email = viewModel.email.collectAsState().value
 
     var isError by remember{ mutableStateOf("") }
@@ -53,7 +55,7 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = view
         viewModel.eventFLow.collectLatest { logged ->
             when(logged){
                 is Logged.Success ->{
-//                    navController.navigateToMainScreen()
+                    navController.navigateToMainScreen()
                 }
                 is Logged.Failure->{
                     isError = logged.message
@@ -80,11 +82,11 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = view
             ) {  viewModel.updateField(UpdateField.First(it))}
             Spacer(modifier = Modifier.height(35.dp))
             MyTextField(
-                lastName, modifier = Modifier
+                password, modifier = Modifier
                     .fillMaxWidth()
                     .height(29.dp)
                     .clip(MaterialTheme.shapes.medium)
-                    .background(GreyField), stringResource(R.string.last_name)
+                    .background(GreyField), stringResource(R.string.password)
             ) { viewModel.updateField(UpdateField.Last(it))}
             Spacer(modifier = Modifier.height(35.dp))
             MyTextField(
