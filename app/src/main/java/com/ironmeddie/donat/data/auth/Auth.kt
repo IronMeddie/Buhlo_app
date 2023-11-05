@@ -12,6 +12,10 @@ import com.google.firebase.ktx.Firebase
 import com.ironmeddie.donat.models.User
 import com.ironmeddie.donat.utils.Constance
 import com.ironmeddie.donat.utils.activity
+import io.appmetrica.analytics.AppMetrica
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.tasks.await
 
 class Auth() : Authorization {
 
@@ -82,15 +86,43 @@ class Auth() : Authorization {
 
     }
 
-    override fun logIn(login: String, password: String) {
-        TODO("Not yet implemented")
+    override fun logIn(login: String, password: String): Flow<AuthResult> = flow {
+    try {
+        auth.signInWithEmailAndPassword(login, password).await()
+        emit(AuthResult.Success)
+    }catch (t: Throwable){
+        AppMetrica.reportError("logIn",t)
+        emit(AuthResult.Failure(t.message.toString()))
     }
 
-    override fun logOut() {
-        TODO("Not yet implemented")
     }
 
-    override fun registration(login: String, password: String, user: User) {
-        TODO("Not yet implemented")
+    override fun logOut(): Flow<AuthResult> = flow {
+        try {
+            auth.signOut()
+            emit(AuthResult.Success)
+        }catch (t: Throwable){
+            AppMetrica.reportError("logOut",t)
+            emit(AuthResult.Failure(t.message.toString()))
+        }
     }
+
+    override fun registration(login: String, password: String, user: User) = flow<AuthResult> {
+
+        try {
+            auth.createUserWithEmailAndPassword(login, password).await()
+            emit(AuthResult.Success)
+        }catch (e: Throwable){
+
+            emit(AuthResult.Failure(e.message.toString()))
+            AppMetrica.reportError("registration", e)
+        }
+    }
+}
+
+sealed class AuthResult{
+    object Success: AuthResult()
+//    object logInSuccess: AuthResult()
+//    object regSuccess: AuthResult()
+    data class Failure(val message: String): AuthResult()
 }

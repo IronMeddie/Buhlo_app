@@ -31,7 +31,7 @@ fun TransactionItem(transaction: Transaction){
         .background(MaterialTheme.colorScheme.background)) {
         Column {
             Row(modifier = Modifier
-                .padding(4.dp)
+                .padding(12.dp)
                 .fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text(text = transaction.userName, style = MaterialTheme.typography.titleLarge)
 
@@ -40,9 +40,13 @@ fun TransactionItem(transaction: Transaction){
 
             }
             Spacer(modifier = Modifier.height(12.dp))
-            
-            Text(text = transaction.money, style = MaterialTheme.typography.titleMedium)
-            
+
+            Row(modifier = Modifier.padding(horizontal = 16.dp)) {
+
+                Text(text = transaction.money, style = MaterialTheme.typography.titleMedium)
+
+            }
+
         }
        
 

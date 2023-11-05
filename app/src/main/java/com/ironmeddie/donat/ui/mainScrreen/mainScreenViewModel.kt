@@ -12,10 +12,9 @@ import com.ironmeddie.donat.domain.getMainScreenData.updateMoneyValue
 import com.ironmeddie.donat.models.Category
 import com.ironmeddie.donat.models.Transaction
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
@@ -25,7 +24,7 @@ import javax.inject.Inject
 class MainScreenViewModel @Inject constructor(
     private val useCase: getCategoriesUseCase,
     private val updateMoneyValue: updateMoneyValue,
-        private val getMoney: getCurrentmoney,
+    private val getMoney: getCurrentmoney,
     private val getTransactions: getTransaction,
     private val sync: SyncDataUseCase,
 ) : ViewModel() {
@@ -55,7 +54,7 @@ class MainScreenViewModel @Inject constructor(
         getData()
     }
 
-    fun syncData(){
+    fun syncData() {
         viewModelScope.launch {
 
             Log.d("caheckCode", "viewmodel syncData")
@@ -66,12 +65,12 @@ class MainScreenViewModel @Inject constructor(
         }
     }
 
-     private fun getData() {
+    private fun getData() {
         viewModelScope.launch {
-            getTransactions().combine(getMoney()){ tr, mon ->
-                Pair(tr,mon)
-            }.combine(useCase()){ pair, cat->
-                Pair(pair,cat)
+            getTransactions().combine(getMoney()) { tr, mon ->
+                Pair(tr, mon)
+            }.combine(useCase()) { pair, cat ->
+                Pair(pair, cat)
             }.collectLatest {
                 _currentMoney.value = it.first.second.money.toString()
                 _transactions.value = it.first.first
@@ -80,25 +79,41 @@ class MainScreenViewModel @Inject constructor(
         }
     }
 
-    fun pullRefresh(){
+    private var job: Job? = null
+
+    fun getCategories(str: String) {
+        job = null
+        job = viewModelScope.launch {
+            useCase(str).collect() {
+                _categories.value = it
+                job = null
+            }
+        }
+
+
+    }
+
+    fun pullRefresh() {
         _isPullRefreshing.value = true
         syncData()
 //        getData()
 
     }
 
-    fun updateMoney(){
+    fun updateMoney() {
         viewModelScope.launch {
 
-            updateMoneyValue(summ.value.toDouble(), listOf(currentcategory.value) )
+            updateMoneyValue(summ.value.toDouble(), listOf(currentcategory.value))
         }
     }
+
     fun changeCategory(category: Category) {
         _currentcategory.value = category
     }
 
     fun search(str: String) {
         _search.value = str
+        getCategories(str)
     }
 
     fun summ(str: String) {

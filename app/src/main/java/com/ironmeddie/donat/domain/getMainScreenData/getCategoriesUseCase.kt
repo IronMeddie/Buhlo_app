@@ -7,6 +7,6 @@ import javax.inject.Inject
 
 class getCategoriesUseCase @Inject constructor(private val database: AppDatabase) {
 
-    operator fun invoke() =
-        database.categoryDao().getAll().map { it.map { it.toCategory() } }
+    operator fun invoke(filter: String = "") =
+        database.categoryDao().getAll().map { it.map { it.toCategory() }.filter { it.name.contains(filter, true) } }
 }
