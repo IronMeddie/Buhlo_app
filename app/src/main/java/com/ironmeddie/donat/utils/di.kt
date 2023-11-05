@@ -9,10 +9,8 @@ import com.ironmeddie.donat.data.auth.Authorization
 import com.ironmeddie.donat.data.database.AppDatabase
 import com.ironmeddie.donat.data.firestoreDb.RemoteDataBase
 import com.ironmeddie.donat.domain.NewCurrentUser
-import com.ironmeddie.donat.domain.getMainScreenData.getCategoriesUseCase
+import com.ironmeddie.donat.domain.SyncDataUseCase
 import com.ironmeddie.donat.domain.getMainScreenData.getCurrentmoney
-import com.ironmeddie.donat.domain.getMainScreenData.getTransaction
-import com.ironmeddie.donat.domain.getMainScreenData.updateMoneyValue
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -44,19 +42,23 @@ object DataBaseModule {
 @InstallIn(SingletonComponent::class)
 object UseCasesModule {
 
-    @Provides
-    fun providesCategories(db: RemoteDataBase) = getCategoriesUseCase(db)
-
+//    @Provides
+//    fun providesCategories(db: AppDatabase) = getCategoriesUseCase(db)
+//
     @Provides
     fun providesCurrentMoney(db: RemoteDataBase) = getCurrentmoney(db)
+//
+//    @Provides
+//    fun providesGetTransactions(db: AppDatabase) = getTransaction(db)
+//    @Provides
+//    fun providesupdateMoneyUseCase(db: RemoteDataBase, auth: Authorization) = updateMoneyValue(db,auth)
+//
 
     @Provides
-    fun providesGetTransactions(db: AppDatabase) = getTransaction(db)
-    @Provides
-    fun providesupdateMoneyUseCase(db: RemoteDataBase, auth: Authorization) = updateMoneyValue(db,auth)
-
+    fun providesSynch(remoteDb: RemoteDataBase, db: AppDatabase) = SyncDataUseCase(db,remoteDb)
     @Provides
     fun providesLodIn(db: RemoteDataBase, auth: Authorization) = NewCurrentUser()
+
 }
 
 

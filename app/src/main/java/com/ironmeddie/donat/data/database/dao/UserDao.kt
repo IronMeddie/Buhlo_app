@@ -6,11 +6,12 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.ironmeddie.donat.data.database.entity.User
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
     @Query("SELECT * FROM user")
-    fun getAll(): List<User>
+    fun getAll(): Flow<List<User>>
 
 //    @Query("SELECT * FROM user WHERE uid IN (:userIds)")
 //    fun loadAllByIds(userIds: IntArray): List<User>
@@ -20,8 +21,8 @@ interface UserDao {
 //    fun findByName(first: String, last: String): User
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(vararg users: User)
+    suspend fun insertAll(vararg users: User)
 
     @Delete
-    fun delete(user: User)
+    suspend fun delete(user: User)
 }

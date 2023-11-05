@@ -141,7 +141,7 @@ fun MainScreen(navController: NavController
                     else CircularProgressIndicator()
             } }
 
-            items(transactions){
+            items(transactions, key = {it.id}){
                 TransactionItem(transaction = it)
             }
 

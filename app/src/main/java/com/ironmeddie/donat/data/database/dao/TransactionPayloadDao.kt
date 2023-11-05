@@ -14,5 +14,5 @@ interface TransactionPayloadDao {
     fun getTransactionCategories(transactionID: String): Flow<List<TransactionPayload>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addAll(payload: List<TransactionPayload>)
+    suspend fun addAll(payload: List<TransactionPayload>)
 }

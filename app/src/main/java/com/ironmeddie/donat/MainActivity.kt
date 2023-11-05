@@ -14,6 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import androidx.room.Room
+import com.ironmeddie.donat.data.database.AppDatabase
 import com.ironmeddie.donat.domain.SyncDataUseCase
 import com.ironmeddie.donat.ui.navHost.MainNavHost
 import com.ironmeddie.donat.ui.theme.DonatTheme
@@ -27,6 +29,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+var AppDatabaseTest : AppDatabase? = null
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -34,6 +37,10 @@ class MainActivity : ComponentActivity() {
     lateinit var sync: SyncDataUseCase
     override fun onCreate(savedInstanceState: Bundle?) {
         activity = this
+        AppDatabaseTest = Room.databaseBuilder(
+            this,
+            AppDatabase::class.java, "database-name"
+        ).build()
         super.onCreate(savedInstanceState)
         CoroutineScope(Dispatchers.IO).launch {
             sync.invoke().collectLatest {

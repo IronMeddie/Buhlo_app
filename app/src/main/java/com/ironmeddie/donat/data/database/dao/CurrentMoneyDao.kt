@@ -15,8 +15,8 @@ interface CurrentMoneyDao {
     fun getAll(): Flow<CurrentMoney>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(money: CurrentMoney)
+    suspend fun insert(money: CurrentMoney)
 
     @Delete
-    fun delete(money: CurrentMoney)
+    suspend fun delete(money: CurrentMoney)
 }

@@ -5,7 +5,8 @@ import com.ironmeddie.donat.data.database.AppDatabase
 import com.ironmeddie.donat.data.database.entity.toEntity
 import com.ironmeddie.donat.data.database.entity.toTransactionPayload
 import com.ironmeddie.donat.data.firestoreDb.RemoteDataBase
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -15,7 +16,7 @@ class SyncDataUseCase @Inject constructor(
     private val remoteDB: RemoteDataBase
 ) {
 
-    operator fun invoke() =
+    operator fun invoke(): Flow<SyncResult> =
         remoteDB.getCategoryes().flatMapLatest { categories ->
             Log.d("checkCode","test categories")
             db.categoryDao().insertAll(categories.map { it.toEntity() })
@@ -34,16 +35,6 @@ class SyncDataUseCase @Inject constructor(
             }
         }
     }
-//        remoteDB.getCategoryes().combine(remoteDB.getCurrentMoney()) { categories, money ->
-//            Pair(categories, money)
-//        }.combine(remoteDB.getTransactions()) { pair, transactions ->
-//            val categories = pair.first
-//            val money = pair.second
-//
-//
-//        }
-
-
 }
 
 sealed class SyncResult {

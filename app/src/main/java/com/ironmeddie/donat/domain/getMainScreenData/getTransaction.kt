@@ -16,7 +16,7 @@ class getTransaction @Inject constructor(private val db: AppDatabase) {
                 categories = emptyList(),
                 id= transaction.id
 
-            ) } }
+            ) }.sortedByDescending { it.dateTime } }
 
 
 

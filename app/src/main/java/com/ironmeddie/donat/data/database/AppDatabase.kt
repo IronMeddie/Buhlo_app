@@ -18,7 +18,7 @@ import com.ironmeddie.donat.data.database.entity.User
         CurrentMoney::class,
         Category::class,
         Transaction::class,
-        TransactionPayload::class], version = 1
+        TransactionPayload::class], version = 2
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao

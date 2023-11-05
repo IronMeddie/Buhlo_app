@@ -15,14 +15,14 @@ interface CategoryDao {
     fun getAll(): Flow<List<Category>>
 
     @Query("DELETE FROM Category")
-    fun deleteAll()
+    suspend fun deleteAll()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(category: Category)
+    suspend fun insert(category: Category)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(categories: List<Category>)
+    suspend fun insertAll(categories: List<Category>)
 
     @Delete
-    fun delete(category: Category)
+    suspend fun delete(category: Category)
 }

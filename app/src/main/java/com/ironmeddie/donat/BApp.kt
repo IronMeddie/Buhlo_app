@@ -2,8 +2,10 @@ package com.ironmeddie.donat
 
 import android.app.Application
 import android.util.Log
+import androidx.room.Room
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.initialize
+import com.ironmeddie.donat.data.database.AppDatabase
 import com.ironmeddie.donat.domain.SyncDataUseCase
 import com.ironmeddie.donat.utils.Constance
 import dagger.hilt.android.HiltAndroidApp
@@ -29,10 +31,6 @@ class BApp: Application() {
 
         AppMetrica.enableActivityAutoTracking(this)
         AppMetrica.sendEventsBuffer()
-
-
-
-
 
 
     }

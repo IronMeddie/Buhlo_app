@@ -60,13 +60,7 @@ class RemoteData: RemoteDataBase {
             db.collection("transactions")
                 .add(transaction)
                 .await()
-//                    .addOnSuccessListener { documentReference ->
-//                        Log.d(Constance.TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
-//                    }
-//                    .addOnFailureListener { e ->
-//                        Log.w(Constance.TAG, "Error adding document", e)
-//                        AppMetrica.reportError("firebase", e)
-//                    }
+
             db.collection("money").document("money").update("money", FieldValue.increment(purchase))
                 .await()
 
@@ -125,8 +119,8 @@ class RemoteData: RemoteDataBase {
                     .get()
                     .await().map {
 
-                        val cat= it.data["categories"]
-                        Log.d("checkCode categories",cat.toString())
+//                        val cat= it.data["categories"]
+//                        Log.d("checkCode categories",cat.toString())
                     Transaction(
                         userName  = it.data["username"].toString(),
                         userID = it.data["userID"].toString(),

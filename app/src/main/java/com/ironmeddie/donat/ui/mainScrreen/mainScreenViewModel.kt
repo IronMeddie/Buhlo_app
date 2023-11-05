@@ -4,26 +4,30 @@ import android.util.Log
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ironmeddie.donat.domain.SyncDataUseCase
 import com.ironmeddie.donat.domain.getMainScreenData.getCategoriesUseCase
 import com.ironmeddie.donat.domain.getMainScreenData.getCurrentmoney
 import com.ironmeddie.donat.domain.getMainScreenData.getTransaction
 import com.ironmeddie.donat.domain.getMainScreenData.updateMoneyValue
 import com.ironmeddie.donat.models.Category
 import com.ironmeddie.donat.models.Transaction
-import com.ironmeddie.donat.utils.Constance
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
     private val useCase: getCategoriesUseCase,
-    private val getMoney: getCurrentmoney,
     private val updateMoneyValue: updateMoneyValue,
-    private val getTransactions: getTransaction
+        private val getMoney: getCurrentmoney,
+    private val getTransactions: getTransaction,
+    private val sync: SyncDataUseCase,
 ) : ViewModel() {
 
     private val _categories = MutableStateFlow(listOf<Category>())
@@ -51,26 +55,36 @@ class MainScreenViewModel @Inject constructor(
         getData()
     }
 
-     private fun getData() {
+    fun syncData(){
         viewModelScope.launch {
-            useCase().collectLatest {
-                _categories.value = it
-                Log.d(Constance.TAG, "загружено")
 
-            }
-            getMoney().collectLatest {
-                _currentMoney.value = it.money.toString()
+            Log.d("caheckCode", "viewmodel syncData")
+            sync.invoke().collectLatest {
+                Log.d("checkCode", "syncSuccess complited")
                 _isPullRefreshing.value = false
             }
-            getTransactions().collectLatest {
-                _transactions.value = it
+        }
+    }
+
+     private fun getData() {
+        viewModelScope.launch {
+            getTransactions().combine(getMoney()){ tr, mon ->
+                Pair(tr,mon)
+            }.combine(useCase()){ pair, cat->
+                Pair(pair,cat)
+            }.collectLatest {
+                _currentMoney.value = it.first.second.money.toString()
+                _transactions.value = it.first.first
+                _categories.value = it.second
             }
         }
     }
 
     fun pullRefresh(){
         _isPullRefreshing.value = true
-        getData()
+        syncData()
+//        getData()
+
     }
 
     fun updateMoney(){
