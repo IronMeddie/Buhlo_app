@@ -29,6 +29,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,6 +50,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.ironmeddie.donat.R
+import com.ironmeddie.donat.data.auth.AuthResult
 import com.ironmeddie.donat.ui.navHost.navigateToLoginScreen
 import com.ironmeddie.donat.ui.theme.Border
 import com.ironmeddie.donat.ui.theme.GreyIconBack
@@ -60,6 +62,11 @@ import kotlinx.coroutines.launch
 fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hiltViewModel()) {
     val scope = rememberCoroutineScope()
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+
+    val signOut = viewModel._logOut.collectAsState().value
+    LaunchedEffect(key1 = signOut ){
+        if (signOut is AuthResult.Success) navController.navigateToLoginScreen()
+    }
 
     val context = LocalContext.current
 
@@ -198,7 +205,7 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hi
             item {
                 ProfileListItem(stringResource(R.string.log_out), R.drawable.log_in, {
                     viewModel.logOut()
-                    navController.navigateToLoginScreen()
+
                 }) {}
             }
 

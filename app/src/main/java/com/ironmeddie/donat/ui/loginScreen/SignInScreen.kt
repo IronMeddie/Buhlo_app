@@ -134,9 +134,9 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
                 )
             }
             Spacer(modifier = Modifier.height(60.dp))
-            SignWith(R.drawable.google, stringResource(R.string.sign_with_google))
-            Spacer(modifier = Modifier.height(28.dp))
-            SignWith(R.drawable.apple, stringResource(R.string.sign_with_apple))
+//            SignWith(R.drawable.google, stringResource(R.string.sign_with_google))
+//            Spacer(modifier = Modifier.height(28.dp))
+//            SignWith(R.drawable.apple, stringResource(R.string.sign_with_apple))
         }
     }
 

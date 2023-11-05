@@ -3,6 +3,7 @@ package com.ironmeddie.donat.ui.profile
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ironmeddie.donat.data.auth.AuthResult
 import com.ironmeddie.donat.domain.auth.CurrentUser
 import com.ironmeddie.donat.domain.auth.SignOut
 import com.ironmeddie.donat.models.User
@@ -11,18 +12,22 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val logOut: SignOut,
+    private val signOut: SignOut,
 //    private val updateAvatar: UpdateAvatar,
     private val currentUser: CurrentUser
 ) : ViewModel() {
 
     private val _user = MutableStateFlow<User?>(null)
     val user = _user.asStateFlow()
+
+    val _logOut = MutableStateFlow<AuthResult>(AuthResult.Loading)
+    val logOut = _logOut.asStateFlow()
 
 
     init {
@@ -31,7 +36,9 @@ class ProfileViewModel @Inject constructor(
 
     fun logOut() {
         CoroutineScope(Dispatchers.IO).launch {
-            logOut.invoke()
+            signOut.invoke().collectLatest {
+                _logOut.value = it
+            }
         }
     }
 
