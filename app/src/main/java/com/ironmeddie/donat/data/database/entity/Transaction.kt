@@ -16,7 +16,7 @@ data class Transaction(
 
 fun Transaction.toEntity() = com.ironmeddie.donat.data.database.entity.Transaction(
     userName = userName,
-    time = time,
+    time = dateTime,
     money = money,
     id = id
 )

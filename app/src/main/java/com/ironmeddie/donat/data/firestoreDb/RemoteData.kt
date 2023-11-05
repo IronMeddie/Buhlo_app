@@ -1,11 +1,14 @@
 package com.ironmeddie.donat.data.firestoreDb
 
 import android.util.Log
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.ServerTimestamp
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
 import com.ironmeddie.donat.models.Category
+import com.ironmeddie.donat.models.Money
 import com.ironmeddie.donat.models.Transaction
 import com.ironmeddie.donat.models.User
 import com.ironmeddie.donat.ui.mainScrreen.components.getCategorys
@@ -51,8 +54,8 @@ class RemoteData: RemoteDataBase {
             val transaction = hashMapOf(
                 "userID" to user.id,
                 "dateTime" to FieldValue.serverTimestamp(),
-                "revenue" to purchase,
-                "categories" to categories
+                "money" to purchase,
+                "categories" to categories.map { it.name }
             )
             db.collection("transactions")
                 .add(transaction)
@@ -117,10 +120,23 @@ class RemoteData: RemoteDataBase {
     override fun getTransactions(): Flow<List<Transaction>> {
         return flow<List<Transaction>> {
             try {
-                val list: List<Transaction> = db
+                val list = db
                     .collection("transactions")
                     .get()
-                    .await().toObjects(Transaction::class.java)
+                    .await().map {
+
+                        val cat= it.data["categories"]
+                        Log.d("checkCode categories",cat.toString())
+                    Transaction(
+                        userName  = it.data["username"].toString(),
+                        userID = it.data["userID"].toString(),
+                        dateTime = (it.data["dateTime"] as Timestamp).toDate().toString(),
+                        money = it.data["money"].toString(),
+                        categories =  emptyList(),
+                        id = it.id
+                    )
+                    }
+
 
                 emit(list)
             } catch (t: Throwable) {

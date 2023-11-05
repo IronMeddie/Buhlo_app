@@ -1,4 +1,4 @@
-package com.ironmeddie.donat.data.firestoreDb
+package com.ironmeddie.donat.models
 
 data class Money(
     val money: Double = 0.0,

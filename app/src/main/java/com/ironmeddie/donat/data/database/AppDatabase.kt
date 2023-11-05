@@ -13,9 +13,13 @@ import com.ironmeddie.donat.data.database.entity.Transaction
 import com.ironmeddie.donat.data.database.entity.TransactionPayload
 import com.ironmeddie.donat.data.database.entity.User
 
-@Database(entities = [User::class, CurrentMoney::class, Category::class,
-    Transaction::class,
-                     TransactionPayload::class], version = 1)
+@Database(
+    entities = [User::class,
+        CurrentMoney::class,
+        Category::class,
+        Transaction::class,
+        TransactionPayload::class], version = 1
+)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun currentMoneyDao(): CurrentMoneyDao

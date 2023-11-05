@@ -3,6 +3,7 @@ package com.ironmeddie.donat.data.database.dao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.ironmeddie.donat.data.database.entity.Category
 import com.ironmeddie.donat.data.database.entity.CurrentMoney
@@ -16,10 +17,10 @@ interface CategoryDao {
     @Query("DELETE FROM Category")
     fun deleteAll()
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(category: Category)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(categories: List<Category>)
 
     @Delete

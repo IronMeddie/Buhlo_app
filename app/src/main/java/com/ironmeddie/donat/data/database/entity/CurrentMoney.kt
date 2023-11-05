@@ -3,7 +3,7 @@ package com.ironmeddie.donat.data.database.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.ironmeddie.donat.data.firestoreDb.Money
+import com.ironmeddie.donat.models.Money
 
 
 @Entity
