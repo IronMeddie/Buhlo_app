@@ -46,7 +46,7 @@ object UseCasesModule {
 //    fun providesCategories(db: AppDatabase) = getCategoriesUseCase(db)
 //
     @Provides
-    fun providesCurrentMoney(db: RemoteDataBase) = getCurrentmoney(db)
+    fun providesCurrentMoney(db: AppDatabase) = getCurrentmoney(db)
 //
 //    @Provides
 //    fun providesGetTransactions(db: AppDatabase) = getTransaction(db)
