@@ -15,20 +15,11 @@ import com.ironmeddie.donat.ui.theme.DonatTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-var AppDatabaseTest: AppDatabase? = null
-
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject
-    lateinit var sync: SyncDataUseCase
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        CoroutineScope(Dispatchers.IO).launch {
-//            sync.invoke().collectLatest {
-//                Log.d(Constance.TAG, "sync")
-//            }
-//        }
         setContent {
             DonatTheme {
                 // A surface container using the 'background' color from the theme
