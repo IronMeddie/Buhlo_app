@@ -35,7 +35,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ironmeddie.donat.ui.TopBar
 import com.ironmeddie.donat.ui.mainScrreen.components.CategoryRow
@@ -51,8 +50,9 @@ import com.ironmeddie.donat.utils.Constance
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(navController: NavController
-, context: Context, viewModel: MainScreenViewModel = hiltViewModel()) {
+fun MainScreen(
+    navController: NavController, context: Context, viewModel: MainScreenViewModel = hiltViewModel()
+) {
 
     val categories = viewModel.categories.collectAsState().value
     val transactions = viewModel.transactions.collectAsState().value
@@ -63,7 +63,7 @@ fun MainScreen(navController: NavController
     val refreshing = viewModel.isPullRefreshing.collectAsState().value
     val refreshState = rememberPullRefreshState(refreshing, viewModel::pullRefresh)
 
-    Scaffold(topBar = { TopBar(){ navController.navigateToProfile()} }) {
+    Scaffold(topBar = { TopBar() { navController.navigateToProfile() } }) {
 
 
         Box(
@@ -138,7 +138,7 @@ fun MainScreen(navController: NavController
 
                 }
 
-                item(key= "money") {
+                item(key = "money") {
                     Spacer(modifier = Modifier.height(32.dp))
                     Box(
                         modifier = Modifier
@@ -180,28 +180,29 @@ fun MainScreen(navController: NavController
 
     }
 }
-    fun openIntent(context: Context, other: () -> Unit) {
-        try {
-            val uri =
-                "intent://ru.sberbankmobile/payments/p2p?source=QR_FROM_SELF_EMPLOYED_EXTERNAL&type=phone_number&requisiteNumber=79254582814&external_source=pbpn-_--_--_--_--_--_-_y_1698677837122447754_d_17334569-840c-4138-93a9-1bad10675fe9_g_0.0"
-            val intent = Intent(Intent.ACTION_VIEW)
-            intent.data = Uri.parse(uri)
-            startActivity(context, intent, null)
-        } catch (e: Throwable) {
-            Log.d(Constance.TAG, e.message.toString())
-            other()
-        }
+
+fun openIntent(context: Context, other: () -> Unit) {
+    try {
+        val uri =
+            "intent://ru.sberbankmobile/payments/p2p?source=QR_FROM_SELF_EMPLOYED_EXTERNAL&type=phone_number&requisiteNumber=79254582814&external_source=pbpn-_--_--_--_--_--_-_y_1698677837122447754_d_17334569-840c-4138-93a9-1bad10675fe9_g_0.0"
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse(uri)
+        startActivity(context, intent, null)
+    } catch (e: Throwable) {
+        Log.d(Constance.TAG, e.message.toString())
+        other()
+    }
 
 
 }
 
-fun openLink(context: Context){
+fun openLink(context: Context) {
     try {
-    val url = "https://www.sberbank.com/sms/pbpn?requisiteNumber=79254582814"
-    val intent = Intent(Intent.ACTION_VIEW)
-    intent.data = Uri.parse(url)
-    startActivity(context, intent, null)
-    }catch (e: Throwable){
+        val url = "https://www.sberbank.com/sms/pbpn?requisiteNumber=79254582814"
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse(url)
+        startActivity(context, intent, null)
+    } catch (e: Throwable) {
         Log.d(Constance.TAG, e.message.toString())
     }
 

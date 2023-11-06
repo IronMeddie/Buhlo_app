@@ -1,6 +1,5 @@
 package com.ironmeddie.donat.ui.mainScrreen
 
-import android.util.Log
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

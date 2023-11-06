@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -33,7 +32,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ironmeddie.donat.R
 import com.ironmeddie.donat.ui.mainScrreen.components.MyTextField
@@ -49,15 +47,16 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
     val password = viewModel.lastName.collectAsState().value
     val email = viewModel.email.collectAsState().value
 
-    var isError by remember{ mutableStateOf("") }
+    var isError by remember { mutableStateOf("") }
 
-    LaunchedEffect(key1 = viewModel.eventFLow){
+    LaunchedEffect(key1 = viewModel.eventFLow) {
         viewModel.eventFLow.collectLatest { logged ->
-            when(logged){
-                is Logged.Success ->{
+            when (logged) {
+                is Logged.Success -> {
                     navController.navigateToMainScreen()
                 }
-                is Logged.Failure->{
+
+                is Logged.Failure -> {
                     isError = logged.message
                 }
             }
@@ -71,7 +70,10 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
                 .fillMaxWidth()
                 .padding(horizontal = 43.dp), horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = stringResource(R.string.sign_in), style = MaterialTheme.typography.headlineLarge)
+            Text(
+                text = stringResource(R.string.sign_in),
+                style = MaterialTheme.typography.headlineLarge
+            )
             Spacer(modifier = Modifier.height(60.dp))
             MyTextField(
                 firstName, modifier = Modifier
@@ -79,7 +81,7 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
                     .height(29.dp)
                     .clip(MaterialTheme.shapes.medium)
                     .background(GreyField), stringResource(R.string.first_name)
-            ) {  viewModel.updateField(UpdateField.First(it))}
+            ) { viewModel.updateField(UpdateField.First(it)) }
             Spacer(modifier = Modifier.height(35.dp))
             MyTextField(
                 email, modifier = Modifier
@@ -97,7 +99,7 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
                     .height(29.dp)
                     .clip(MaterialTheme.shapes.medium)
                     .background(GreyField), stringResource(R.string.password),
-                {viewModel.updateField(UpdateField.Last(it))}
+                { viewModel.updateField(UpdateField.Last(it)) }
             )
 
 
@@ -108,8 +110,8 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
             Spacer(modifier = Modifier.height(35.dp))
             Button(
                 onClick = {
-                          viewModel.insert()
-                          }, modifier = Modifier
+                    viewModel.insert()
+                }, modifier = Modifier
                     .fillMaxWidth()
                     .height(46.dp)
             ) {
@@ -144,10 +146,7 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
     }
 
 
-
 }
-
-
 
 
 @Composable

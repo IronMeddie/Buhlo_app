@@ -1,12 +1,11 @@
 package com.ironmeddie.donat.utils
 
-import android.app.Activity
 import android.content.Context
 import androidx.room.Room
-import com.ironmeddie.donat.data.firestoreDb.RemoteData
 import com.ironmeddie.donat.data.auth.Auth
 import com.ironmeddie.donat.data.auth.Authorization
 import com.ironmeddie.donat.data.database.AppDatabase
+import com.ironmeddie.donat.data.firestoreDb.RemoteData
 import com.ironmeddie.donat.data.firestoreDb.RemoteDataBase
 import com.ironmeddie.donat.domain.SyncDataUseCase
 import com.ironmeddie.donat.domain.getMainScreenData.getCurrentmoney
@@ -18,7 +17,6 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 object DataBaseModule {
@@ -26,21 +24,24 @@ object DataBaseModule {
     @Singleton
     @Provides
     fun providesRemoteDatabase(): RemoteDataBase = RemoteData()
+
     @Singleton
     @Provides
     fun providesDatabase(@ApplicationContext context: Context): AppDatabase = Room.databaseBuilder(
         context,
         AppDatabase::class.java, "database-name"
     ).build()
+
     @Singleton
     @Provides
-    fun provideAuth() : Authorization = Auth()
+    fun provideAuth(): Authorization = Auth()
 }
+
 @Module
 @InstallIn(SingletonComponent::class)
 object UseCasesModule {
 
-//    @Provides
+    //    @Provides
 //    fun providesCategories(db: AppDatabase) = getCategoriesUseCase(db)
 //
     @Provides
@@ -53,7 +54,7 @@ object UseCasesModule {
 //
 
     @Provides
-    fun providesSynch(remoteDb: RemoteDataBase, db: AppDatabase) = SyncDataUseCase(db,remoteDb)
+    fun providesSynch(remoteDb: RemoteDataBase, db: AppDatabase) = SyncDataUseCase(db, remoteDb)
 
 }
 

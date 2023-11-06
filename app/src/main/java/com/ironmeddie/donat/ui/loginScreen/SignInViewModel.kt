@@ -32,7 +32,7 @@ class SignInViewModel @Inject constructor(
 
     fun insert() {
         viewModelScope.launch {
-            if (_email.value.isEmail()){
+            if (_email.value.isEmail()) {
                 val user = User(
                     firstName = _firstName.value,
                     lastName = _lastName.value,
@@ -40,18 +40,18 @@ class SignInViewModel @Inject constructor(
                     password = "",
                     avatar = ""
                 )
-               registration(_email.value, _lastName.value, user).collectLatest {
+                registration(_email.value, _lastName.value, user).collectLatest {
 
-                   when(it){
-                       is AuthResult.Success ->_eventFLow.emit(Logged.Success)
-                       is AuthResult.Failure ->_eventFLow.emit(Logged.Failure(it.message))
-                       else -> Unit
-                   }
+                    when (it) {
+                        is AuthResult.Success -> _eventFLow.emit(Logged.Success)
+                        is AuthResult.Failure -> _eventFLow.emit(Logged.Failure(it.message))
+                        else -> Unit
+                    }
 
-               }
+                }
 
 
-            }else{
+            } else {
                 _eventFLow.emit(Logged.Failure("incorrect email"))
             }
 
@@ -59,14 +59,16 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    fun updateField(update: UpdateField){
+    fun updateField(update: UpdateField) {
         viewModelScope.launch {
-            if (!update.str.contains("\n")){
-                when(update){
-                    is UpdateField.First-> _firstName.value = update.firstName
-                    is UpdateField.Last-> _lastName.value = update.lastName
-                    is UpdateField.Email-> {
-                        if (!update.email.isEmail()) _eventFLow.emit(Logged.Failure("incorrect email")) else _eventFLow.emit(Logged.Failure(""))
+            if (!update.str.contains("\n")) {
+                when (update) {
+                    is UpdateField.First -> _firstName.value = update.firstName
+                    is UpdateField.Last -> _lastName.value = update.lastName
+                    is UpdateField.Email -> {
+                        if (!update.email.isEmail()) _eventFLow.emit(Logged.Failure("incorrect email")) else _eventFLow.emit(
+                            Logged.Failure("")
+                        )
                         _email.value = update.email
                     }
                 }
@@ -76,8 +78,8 @@ class SignInViewModel @Inject constructor(
 
 }
 
-sealed class UpdateField(val str:String){
-    data class First(val firstName:String): UpdateField(firstName)
-    data class Last(val lastName:String): UpdateField(lastName)
-    data class Email(val email:String): UpdateField(email)
+sealed class UpdateField(val str: String) {
+    data class First(val firstName: String) : UpdateField(firstName)
+    data class Last(val lastName: String) : UpdateField(lastName)
+    data class Email(val email: String) : UpdateField(email)
 }

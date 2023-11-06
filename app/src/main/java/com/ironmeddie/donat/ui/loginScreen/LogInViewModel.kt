@@ -27,11 +27,11 @@ class LogInViewModel @Inject constructor(
     private val _eventFLow = MutableSharedFlow<Logged>()
     val eventFLow = _eventFLow.asSharedFlow()
 
-    fun logIn(){
+    fun logIn() {
         viewModelScope.launch {
-            logIn(firstName.value,password.value).collectLatest {
+            logIn(firstName.value, password.value).collectLatest {
 
-                when (it){
+                when (it) {
                     is AuthResult.Success -> _eventFLow.emit(Logged.Success)
                     is AuthResult.Failure -> _eventFLow.emit(Logged.Failure(it.message))
                     else -> Unit
@@ -41,16 +41,16 @@ class LogInViewModel @Inject constructor(
         }
     }
 
-    fun updateFirstName(str:String){
+    fun updateFirstName(str: String) {
         if (!str.contains("\n")) _firstName.value = str
     }
 
-    fun updatePassword(str:String){
+    fun updatePassword(str: String) {
         if (!str.contains("\n")) _password.value = str
     }
 }
 
-sealed class Logged{
+sealed class Logged {
     object Success : Logged()
-    data class Failure(val message: String): Logged()
+    data class Failure(val message: String) : Logged()
 }

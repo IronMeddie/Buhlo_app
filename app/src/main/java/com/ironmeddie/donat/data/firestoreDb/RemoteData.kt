@@ -3,9 +3,7 @@ package com.ironmeddie.donat.data.firestoreDb
 import android.util.Log
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.ServerTimestamp
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.model.Document
 import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
 import com.ironmeddie.donat.models.Category
@@ -20,9 +18,8 @@ import io.appmetrica.analytics.AppMetrica
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
-import java.time.format.DateTimeFormatter
 
-class RemoteData: RemoteDataBase {
+class RemoteData : RemoteDataBase {
 
     private val db = Firebase.firestore
     override fun addCategory() {
@@ -53,7 +50,7 @@ class RemoteData: RemoteDataBase {
         }
     }
 
-    override suspend fun addTransaction(user: User, purchase: Double,categories: List<Category>) {
+    override suspend fun addTransaction(user: User, purchase: Double, categories: List<Category>) {
         try {
             val transaction = hashMapOf(
                 "email" to user.email,
@@ -69,7 +66,7 @@ class RemoteData: RemoteDataBase {
             db.collection("money").document("money").update("money", FieldValue.increment(purchase))
                 .await()
 
-            val event : HashMap<String,Any> = hashMapOf(
+            val event: HashMap<String, Any> = hashMapOf(
                 "userID" to user.id,
                 "revenue" to purchase
             )
@@ -126,15 +123,18 @@ class RemoteData: RemoteDataBase {
 
                         val cat = it.data["categories"].toString().toListOfStrings()
 
-                        Log.d("it.data[\"categories\"].toString()", it.data["categories"].toString())
-                    Transaction(
-                        userName  = it.data["firstName"].toString(),
-                        email = it.data["email"].toString(),
-                        dateTime = (it.data["dateTime"] as Timestamp).toTimeFormat(),
-                        money = it.data["money"].toString(),
-                        categories =  cat ,
-                        id = it.id,
-                    )
+                        Log.d(
+                            "it.data[\"categories\"].toString()",
+                            it.data["categories"].toString()
+                        )
+                        Transaction(
+                            userName = it.data["firstName"].toString(),
+                            email = it.data["email"].toString(),
+                            dateTime = (it.data["dateTime"] as Timestamp).toTimeFormat(),
+                            money = it.data["money"].toString(),
+                            categories = cat,
+                            id = it.id,
+                        )
                     }
 
 

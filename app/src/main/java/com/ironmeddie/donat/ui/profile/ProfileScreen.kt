@@ -3,13 +3,10 @@ package com.ironmeddie.donat.ui.profile
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,14 +17,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -39,7 +35,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -48,14 +43,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import com.ironmeddie.donat.R
 import com.ironmeddie.donat.data.auth.AuthResult
 import com.ironmeddie.donat.ui.navHost.navigateToLoginScreen
-import com.ironmeddie.donat.ui.theme.Border
 import com.ironmeddie.donat.ui.theme.GreyIconBack
-import com.ironmeddie.donat.ui.theme.NameProfile
-import com.ironmeddie.donat.ui.theme.OnotherOneGrey
 import kotlinx.coroutines.launch
 
 @Composable
@@ -64,7 +55,7 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hi
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
     val signOut = viewModel._logOut.collectAsState().value
-    LaunchedEffect(key1 = signOut ){
+    LaunchedEffect(key1 = signOut) {
         if (signOut is AuthResult.Success) navController.navigateToLoginScreen()
     }
 
@@ -80,7 +71,7 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hi
 
                 scope.launch {
                     selectedImageUri = uri
-                    viewModel.updateUser(uri,"")
+                    viewModel.updateUser(uri, "")
                 }
             })
 

@@ -1,10 +1,7 @@
 package com.ironmeddie.donat.domain
 
-import android.util.Log
 import com.ironmeddie.donat.data.database.AppDatabase
-import com.ironmeddie.donat.data.database.entity.TransactionPayload
 import com.ironmeddie.donat.data.database.entity.toEntity
-import com.ironmeddie.donat.data.database.entity.toTransactionPayload
 import com.ironmeddie.donat.data.firestoreDb.RemoteDataBase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -19,25 +16,19 @@ class SyncDataUseCase @Inject constructor(
 
     operator fun invoke(): Flow<SyncResult> =
         remoteDB.getCategoryes().flatMapLatest { categories ->
-            Log.d("checkCode","test categories")
             db.categoryDao().insertAll(categories.map { it.toEntity() })
-        remoteDB.getCurrentMoney().flatMapLatest { money ->
-            Log.d("checkCode","test money")
-            db.currentMoneyDao().insert(money.toEntity())
-            remoteDB.getTransactions().flatMapLatest { transactions ->
-                Log.d("checkCode","test transactons")
-                transactions.forEach { tr->
-                    Log.d("checkCode sync transactions", tr.categories.toString() )
-                    db.transactionPayloadDao()
-                        .addAll(tr.categories.map { TransactionPayload(category = it,tr.id) })
+            remoteDB.getCurrentMoney().flatMapLatest { money ->
+                db.currentMoneyDao().insert(money.toEntity())
+                remoteDB.getTransactions().flatMapLatest { transactions ->
+                    db.transactionDao().insertAll(transactions.map { transaction ->
+                        transaction.toEntity()
+                    })
+                    flow<SyncResult> { emit(SyncResult.Success) }
+                }.catch {
+                    emit(SyncResult.Failure(it.message.toString()))
                 }
-                db.transactionDao().insertAll(transactions.map { transaction ->
-                    transaction.toEntity()
-                })
-                flow { emit(SyncResult.Success) }
             }
         }
-    }
 }
 
 sealed class SyncResult {
