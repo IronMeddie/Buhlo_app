@@ -74,7 +74,7 @@ fun MainScreen(navController: NavController
         ) {
             LazyColumn() {
 
-                item {
+                item(key = "search") {
                     SearchPanel(
                         value = search,
                         modifier = Modifier
@@ -88,19 +88,19 @@ fun MainScreen(navController: NavController
 
 
                 }
-                item {
+                item(key = "categories header") {
                     Spacer(modifier = Modifier.height(12.dp))
                     PartHeader("Категории") {
 
                     }
+                    Spacer(modifier = Modifier.height(22.dp))
                 }
-                item { Spacer(modifier = Modifier.height(22.dp)) }
-                item {
+                item(key = "categories row") {
                     CategoryRow(categories, currentCategory) {
                         viewModel.changeCategory(it)
                     }
                 }
-                item {
+                item(key = "main space") {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -138,7 +138,7 @@ fun MainScreen(navController: NavController
 
                 }
 
-                item {
+                item(key= "money") {
                     Spacer(modifier = Modifier.height(32.dp))
                     Box(
                         modifier = Modifier

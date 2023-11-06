@@ -5,6 +5,6 @@ data class Transaction(
     val email: String = "",
     val dateTime: String = "",
     val money: String = "",
-    val categories: List<Category> = emptyList(),
+    val categories: List<String> = emptyList(),
     val id : String = ""
 )

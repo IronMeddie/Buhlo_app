@@ -40,7 +40,6 @@ fun SignUpScreen(navController: NavController, viewModel : LogInViewModel = hilt
         viewModel.eventFLow.collectLatest { logged ->
             when(logged){
                 is Logged.Success ->{
-                    Log.d("checkCode",  "Logged successful, navigating to mainScreen")
                     navController.navigateToMainScreen()
                 }
                 is Logged.Failure->{

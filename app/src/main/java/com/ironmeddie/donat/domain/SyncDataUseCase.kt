@@ -2,6 +2,7 @@ package com.ironmeddie.donat.domain
 
 import android.util.Log
 import com.ironmeddie.donat.data.database.AppDatabase
+import com.ironmeddie.donat.data.database.entity.TransactionPayload
 import com.ironmeddie.donat.data.database.entity.toEntity
 import com.ironmeddie.donat.data.database.entity.toTransactionPayload
 import com.ironmeddie.donat.data.firestoreDb.RemoteDataBase
@@ -25,9 +26,12 @@ class SyncDataUseCase @Inject constructor(
             db.currentMoneyDao().insert(money.toEntity())
             remoteDB.getTransactions().flatMapLatest { transactions ->
                 Log.d("checkCode","test transactons")
-                db.transactionDao().insertAll(transactions.map { transaction ->
+                transactions.forEach { tr->
+                    Log.d("checkCode sync transactions", tr.categories.toString() )
                     db.transactionPayloadDao()
-                        .addAll(transaction.categories.map { it.toTransactionPayload(transaction.id) })
+                        .addAll(tr.categories.map { TransactionPayload(category = it,tr.id) })
+                }
+                db.transactionDao().insertAll(transactions.map { transaction ->
                     transaction.toEntity()
                 })
                 flow { emit(SyncResult.Success) }

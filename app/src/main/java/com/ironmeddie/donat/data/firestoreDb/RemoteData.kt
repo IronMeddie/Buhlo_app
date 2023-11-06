@@ -5,6 +5,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ServerTimestamp
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.model.Document
 import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
 import com.ironmeddie.donat.models.Category
@@ -13,6 +14,7 @@ import com.ironmeddie.donat.models.Transaction
 import com.ironmeddie.donat.models.User
 import com.ironmeddie.donat.ui.mainScrreen.components.getCategorys
 import com.ironmeddie.donat.utils.Constance
+import com.ironmeddie.donat.utils.toListOfStrings
 import com.ironmeddie.donat.utils.toTimeFormat
 import io.appmetrica.analytics.AppMetrica
 import kotlinx.coroutines.flow.Flow
@@ -58,7 +60,7 @@ class RemoteData: RemoteDataBase {
                 "firstName" to user.firstName,
                 "dateTime" to FieldValue.serverTimestamp(),
                 "money" to purchase,
-                "categories" to categories.map { it.name }
+                "categories" to categories.map { it.name }.toString()
             )
             db.collection("transactions")
                 .add(transaction)
@@ -122,12 +124,15 @@ class RemoteData: RemoteDataBase {
                     .get()
                     .await().map {
 
+                        val cat = it.data["categories"].toString().toListOfStrings()
+
+                        Log.d("it.data[\"categories\"].toString()", it.data["categories"].toString())
                     Transaction(
                         userName  = it.data["firstName"].toString(),
                         email = it.data["email"].toString(),
                         dateTime = (it.data["dateTime"] as Timestamp).toTimeFormat(),
                         money = it.data["money"].toString(),
-                        categories =  emptyList(),
+                        categories =  cat ,
                         id = it.id,
                     )
                     }

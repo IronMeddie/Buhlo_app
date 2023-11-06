@@ -9,8 +9,8 @@ data class TransactionPayload(
     val category: String ="",
     val transactionID: String = "",
     val payload: String = "",
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0
+    @PrimaryKey(autoGenerate = false)
+    val id: String = transactionID+category
 )
 
 fun Category.toTransactionPayload(id: String) : TransactionPayload{

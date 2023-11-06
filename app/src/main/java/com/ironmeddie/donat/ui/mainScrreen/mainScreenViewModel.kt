@@ -56,10 +56,7 @@ class MainScreenViewModel @Inject constructor(
 
     fun syncData() {
         viewModelScope.launch {
-
-            Log.d("caheckCode", "viewmodel syncData")
             sync.invoke().collectLatest {
-                Log.d("checkCode", "syncSuccess complited")
                 _isPullRefreshing.value = false
             }
         }

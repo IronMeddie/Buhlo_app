@@ -34,7 +34,7 @@ fun CategoryRow(categories: List<Category>, currentCategory: Category, onCategor
     }else{
 
         LazyRow(modifier = Modifier.fillMaxWidth()) {
-            items(categories) {
+            items(categories, key = { it.name}) {
                 CategoryItem(it, currentCategory.id == it.id){
                     onCategoryChange(it)
                 }

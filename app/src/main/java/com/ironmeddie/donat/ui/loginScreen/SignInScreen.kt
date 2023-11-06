@@ -81,16 +81,6 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
                     .background(GreyField), stringResource(R.string.first_name)
             ) {  viewModel.updateField(UpdateField.First(it))}
             Spacer(modifier = Modifier.height(35.dp))
-            MyPasswordField(
-                password, modifier = Modifier
-                    .fillMaxWidth()
-                    .height(29.dp)
-                    .clip(MaterialTheme.shapes.medium)
-                    .background(GreyField), stringResource(R.string.password),
-                {viewModel.updateField(UpdateField.Last(it))}
-            )
-
-            Spacer(modifier = Modifier.height(35.dp))
             MyTextField(
                 email, modifier = Modifier
                     .fillMaxWidth()
@@ -100,6 +90,17 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
             ) {
                 viewModel.updateField(UpdateField.Email(it))
             }
+            Spacer(modifier = Modifier.height(35.dp))
+            MyPasswordField(
+                password, modifier = Modifier
+                    .fillMaxWidth()
+                    .height(29.dp)
+                    .clip(MaterialTheme.shapes.medium)
+                    .background(GreyField), stringResource(R.string.password),
+                {viewModel.updateField(UpdateField.Last(it))}
+            )
+
+
             AnimatedVisibility(visible = isError.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(text = isError)

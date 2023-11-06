@@ -2,13 +2,6 @@ package com.ironmeddie.donat.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
-
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
 
 
 // test
@@ -17,7 +10,7 @@ val GreyField = Color(0xFFE8E8E8)
 val GreyIconBack = Color(0xFFEEEFF4)
 val GreyIcon = Color(0xFF909090)
 val GreyText = Color(0xFF7B7B7B)
-val AppBlue = Color(0xFF4E55D7)
+val AppBlue = Color(0xFF0B6F7C)
 val AppLink = Color(0xFF254FE6)
 val DarkBlue = Color(0xFF181726)
 val AppBlack = Color(0xFF040402)
