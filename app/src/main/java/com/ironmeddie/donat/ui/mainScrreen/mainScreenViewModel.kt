@@ -11,6 +11,7 @@ import com.ironmeddie.donat.domain.getMainScreenData.updateMoneyValue
 import com.ironmeddie.donat.models.Category
 import com.ironmeddie.donat.models.Transaction
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -54,8 +55,9 @@ class MainScreenViewModel @Inject constructor(
     }
 
     fun syncData() {
-        viewModelScope.launch {
-            sync.invoke().collectLatest {
+        _isPullRefreshing.value = true
+        viewModelScope.launch(Dispatchers.IO) {
+            sync().collectLatest {
                 _isPullRefreshing.value = false
             }
         }
@@ -89,12 +91,6 @@ class MainScreenViewModel @Inject constructor(
 
     }
 
-    fun pullRefresh() {
-        _isPullRefreshing.value = true
-        syncData()
-//        getData()
-
-    }
 
     fun updateMoney() {
         viewModelScope.launch {

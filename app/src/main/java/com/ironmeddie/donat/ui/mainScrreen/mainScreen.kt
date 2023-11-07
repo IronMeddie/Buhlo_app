@@ -61,7 +61,7 @@ fun MainScreen(
     val summ = viewModel.summ.collectAsState().value
     val currentMoney = viewModel.currentMoney.collectAsState().value
     val refreshing = viewModel.isPullRefreshing.collectAsState().value
-    val refreshState = rememberPullRefreshState(refreshing, viewModel::pullRefresh)
+    val refreshState = rememberPullRefreshState(refreshing, viewModel::syncData)
 
     Scaffold(topBar = { TopBar() { navController.navigateToProfile() } }) {
 
