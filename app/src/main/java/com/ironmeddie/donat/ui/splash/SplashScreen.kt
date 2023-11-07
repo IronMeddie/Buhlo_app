@@ -19,28 +19,41 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.ironmeddie.donat.data.auth.AuthResult
+import com.ironmeddie.donat.domain.SyncResult
 import com.ironmeddie.donat.ui.navHost.navigateToLoginScreen
 import com.ironmeddie.donat.ui.navHost.navigateToMainScreen
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun SplashScreen(navController: NavHostController, viewModel: SplashViewModel = hiltViewModel()) {
     val user = viewModel.user.collectAsState(initial = null).value
 
+    val sync = viewModel.state
+
     LaunchedEffect(user) {
         when (user) {
-            is AuthResult.Loading -> {}
             is AuthResult.Success -> {
-                navController.navigateToMainScreen()
+                viewModel.syncData()
             }
 
             is AuthResult.Failure -> {
                 navController.navigateToLoginScreen()
             }
 
-            else -> {
-
-            }
+            else -> Unit
         }
+    }
+
+    LaunchedEffect(true) {
+        sync.collectLatest {
+            navController.navigateToMainScreen()
+        }
+//        when (sync) {
+//            is SyncResult -> {
+//                navController.navigateToMainScreen()
+//            }
+//            else -> Unit
+//        }
     }
 
 
