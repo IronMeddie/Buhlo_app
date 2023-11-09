@@ -45,7 +45,7 @@ fun CategoryRow(categories: List<Category>, currentCategory: Category, onCategor
 
 @Composable
 @Preview
-fun test(){
+fun Test(){
     val list = getCategorys()
     CategoryRow(list, list[1]){
 
@@ -55,7 +55,7 @@ fun test(){
 @Composable
 fun CategoryItem(category: Category, isChoosed: Boolean = false, onClick : () -> Unit) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
-        .padding(horizontal = 8.dp)
+        .padding(horizontal = 2.dp)
         .width(78.dp)
         .height(100.dp)
         .clip(MaterialTheme.shapes.small)

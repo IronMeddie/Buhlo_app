@@ -100,13 +100,23 @@ fun MainScreen(
                         viewModel.changeCategory(it)
                     }
                 }
+
+                item {
+                    Column {
+                        Spacer(modifier = Modifier.height(26.dp))
+                        PartHeader(title = "Перевести деньги") {
+
+                        }
+                        Spacer(modifier = Modifier.height(26.dp))
+                    }
+                    }
                 item(key = "main space") {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 24.dp)
                     ) {
-                        Spacer(modifier = Modifier.height(96.dp))
+
 
                         MyTextField(
                             value = summ,
@@ -167,6 +177,10 @@ fun MainScreen(
                         } else CircularProgressIndicator()
                     }
                 }
+
+                item { PartHeader(title = "Переводы") {
+
+                } }
 
                 items(transactions, key = { it.id }) {
                     TransactionItem(transaction = it)
