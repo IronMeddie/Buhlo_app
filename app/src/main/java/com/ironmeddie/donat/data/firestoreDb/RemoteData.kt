@@ -57,6 +57,9 @@ class RemoteData : RemoteDataBase {
                 .add(transaction)
                 .await()
 
+            db.collection("money").document("money").update("money", FieldValue.increment(purchase))
+                .await()
+
             val amount = if (categories.size>0)purchase/categories.size else purchase
 
             categories.forEach {

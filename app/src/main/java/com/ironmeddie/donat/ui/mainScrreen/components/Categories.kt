@@ -83,7 +83,7 @@ fun CategoryItem(category: Category, isChoosed: Boolean = false, onClick : () ->
 
 fun getCategorys(): List<Category> = listOf(
     Category("Виски", "R.drawable.ic_whiskey", id = "0"),
-    Category("Пиво","R.drawable.ic_whiskey", id ="1"),
+    Category("Пиво","R.drawable.ic_whiskey", id ="1", amount = "200"),
     Category("Вино","R.drawable.ic_whiskey", id = "2"),
     Category("Текила","R.drawable.ic_whiskey", id = "3"),
     Category( "Шампанское","R.drawable.ic_whiskey", id = "4"),

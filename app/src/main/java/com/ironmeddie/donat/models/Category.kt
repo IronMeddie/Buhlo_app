@@ -5,6 +5,6 @@ data class Category(
     val picture: String = "",
     val description: String = "",
     val id : String = "",
-    val amount: String ="",
-    val voutes: String = ""
+    val amount: String ="0",
+    val voutes: String = "0"
 )

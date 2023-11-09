@@ -38,6 +38,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ironmeddie.donat.ui.TopBar
 import com.ironmeddie.donat.ui.mainScrreen.components.CategoryRow
+import com.ironmeddie.donat.ui.mainScrreen.components.CategoryStatistic
 import com.ironmeddie.donat.ui.mainScrreen.components.MyTextField
 import com.ironmeddie.donat.ui.mainScrreen.components.PartHeader
 import com.ironmeddie.donat.ui.mainScrreen.components.SearchPanel
@@ -176,6 +177,10 @@ fun MainScreen(
                             }
                         } else CircularProgressIndicator()
                     }
+                }
+
+                item {
+                    CategoryStatistic(categories)
                 }
 
                 item { PartHeader(title = "Переводы") {
