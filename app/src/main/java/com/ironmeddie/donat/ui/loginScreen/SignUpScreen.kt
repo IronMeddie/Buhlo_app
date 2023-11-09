@@ -57,6 +57,7 @@ fun SignUpScreen(navController: NavController, viewModel: LogInViewModel = hiltV
                 }
 
                 is Logged.Failure -> {
+                    isLoading = false
                     isError = logged.message
                     delay(4000)
                     isError = ""
@@ -67,7 +68,7 @@ fun SignUpScreen(navController: NavController, viewModel: LogInViewModel = hiltV
     }
 
     LaunchedEffect(key1 = viewModel.syncResult){
-        viewModel.syncResult.collectLatest { result->
+        viewModel.syncResult.collect { result->
             when(result){
                 is SyncResult.Success -> navController.navigateToMainScreen()
                 is SyncResult.Failure -> {
@@ -113,6 +114,7 @@ fun SignUpScreen(navController: NavController, viewModel: LogInViewModel = hiltV
                 Text(text = isError)
             }
             AnimatedVisibility(visible = isLoading) {
+                Spacer(modifier = Modifier.height(16.dp))
                 CircularProgressIndicator()
             }
 
@@ -120,6 +122,7 @@ fun SignUpScreen(navController: NavController, viewModel: LogInViewModel = hiltV
             Button(
                 onClick = {
                     viewModel.logIn()
+                    isLoading = true
                 }, modifier = Modifier
                     .fillMaxWidth()
                     .height(46.dp)

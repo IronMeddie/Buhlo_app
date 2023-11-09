@@ -1,7 +1,6 @@
 package com.ironmeddie.donat.ui.loginScreen
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -27,7 +25,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -57,11 +54,11 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
             when (logged) {
                 is Logged.Success -> {
                     viewModel.loadData()
-
                 }
 
                 is Logged.Failure -> {
                     isError = logged.message
+                    isLoading = false
                 }
             }
 
@@ -69,7 +66,7 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
     }
 
     LaunchedEffect(key1 = viewModel.syncResult){
-        viewModel.syncResult.collectLatest { result->
+        viewModel.syncResult.collect { result->
             when(result){
                 is SyncResult.Success -> navController.navigateToMainScreen()
                 is SyncResult.Failure -> {
@@ -123,10 +120,15 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(text = isError)
             }
+            AnimatedVisibility(visible = isLoading) {
+                Spacer(modifier = Modifier.height(16.dp))
+                CircularProgressIndicator()
+            }
             Spacer(modifier = Modifier.height(35.dp))
             Button(
                 onClick = {
                     viewModel.insert()
+                    isLoading = true
                 }, modifier = Modifier
                     .fillMaxWidth()
                     .height(46.dp)
@@ -155,7 +157,6 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
                 )
             }
             Spacer(modifier = Modifier.height(10.dp))
-            if (isLoading) CircularProgressIndicator()
             Spacer(modifier = Modifier.height(60.dp))
 //            SignWith(R.drawable.google, stringResource(R.string.sign_with_google))
 //            Spacer(modifier = Modifier.height(28.dp))
@@ -166,15 +167,15 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
 
 }
 
-
-@Composable
-fun SignWith(IconRes: Int, text: String) {
-    Row(modifier = Modifier
-        .clickable { }
-        .padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
-        Image(painter = painterResource(id = IconRes), contentDescription = "icon sign with")
-        Spacer(modifier = Modifier.width(12.dp))
-        Text(text = text, fontWeight = FontWeight.W500, fontSize = 12.sp)
-    }
-
-}
+//
+//@Composable
+//fun SignWith(IconRes: Int, text: String) {
+//    Row(modifier = Modifier
+//        .clickable { }
+//        .padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
+//        Image(painter = painterResource(id = IconRes), contentDescription = "icon sign with")
+//        Spacer(modifier = Modifier.width(12.dp))
+//        Text(text = text, fontWeight = FontWeight.W500, fontSize = 12.sp)
+//    }
+//
+//}
