@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ironmeddie.donat.R
+import com.ironmeddie.donat.domain.SyncResult
 import com.ironmeddie.donat.ui.mainScrreen.components.MyTextField
 import com.ironmeddie.donat.ui.navHost.navigateToMainScreen
 import com.ironmeddie.donat.ui.navHost.navigateToSignUp
@@ -48,12 +50,14 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
     val email = viewModel.email.collectAsState().value
 
     var isError by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = viewModel.eventFLow) {
         viewModel.eventFLow.collectLatest { logged ->
             when (logged) {
                 is Logged.Success -> {
-                    navController.navigateToMainScreen()
+                    viewModel.loadData()
+
                 }
 
                 is Logged.Failure -> {
@@ -61,6 +65,18 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
                 }
             }
 
+        }
+    }
+
+    LaunchedEffect(key1 = viewModel.syncResult){
+        viewModel.syncResult.collectLatest { result->
+            when(result){
+                is SyncResult.Success -> navController.navigateToMainScreen()
+                is SyncResult.Failure -> {
+                    isLoading = false
+                    isError = result.message}
+                is SyncResult.Loading -> isLoading = true
+            }
         }
     }
 
@@ -138,6 +154,8 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = hilt
                     lineHeight = 12.19.sp
                 )
             }
+            Spacer(modifier = Modifier.height(10.dp))
+            if (isLoading) CircularProgressIndicator()
             Spacer(modifier = Modifier.height(60.dp))
 //            SignWith(R.drawable.google, stringResource(R.string.sign_with_google))
 //            Spacer(modifier = Modifier.height(28.dp))

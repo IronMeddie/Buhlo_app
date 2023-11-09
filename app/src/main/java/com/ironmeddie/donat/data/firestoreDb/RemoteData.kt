@@ -22,27 +22,21 @@ import kotlinx.coroutines.tasks.await
 class RemoteData : RemoteDataBase {
 
     private val db = Firebase.firestore
-    override fun addCategory() {
+    override suspend fun addCategory() {
         try {
 
             getCategorys().forEach {
                 val user = hashMapOf(
                     "name" to it.name,
                     "picture" to "",
-                    "id" to it.id
+                    "amount" to "",
+                    "description" to "",
+                    "voutes" to ""
                 )
                 db.collection("alc_categories")
                     .add(user)
-                    .addOnSuccessListener { documentReference ->
-                        Log.d(
-                            Constance.TAG,
-                            "DocumentSnapshot added with ID: ${documentReference.id}"
-                        )
-                    }
-                    .addOnFailureListener { e ->
-                        Log.w(Constance.TAG, "Error adding document", e)
-                        AppMetrica.reportError("firebase", e)
-                    }
+                    .await()
+
             }
         } catch (t: Throwable) {
             Log.d(Constance.TAG, t.message.toString())
@@ -63,8 +57,17 @@ class RemoteData : RemoteDataBase {
                 .add(transaction)
                 .await()
 
-            db.collection("money").document("money").update("money", FieldValue.increment(purchase))
-                .await()
+            val amount = if (categories.size>0)purchase/categories.size else purchase
+
+            categories.forEach {
+                db.collection("alc_categories").document(it.id).update("amount", FieldValue.increment(amount))
+                    .await()
+
+                db.collection("alc_categories").document(it.id).update("voutes", FieldValue.increment(1))
+                    .await()
+            }
+
+
 
             val event: HashMap<String, Any> = hashMapOf(
                 "userID" to user.id,
@@ -97,11 +100,18 @@ class RemoteData : RemoteDataBase {
 
         return flow<List<Category>> {
             try {
-                val list: List<Category> = db
+                val list: List<Category> =db
                     .collection("alc_categories")
                     .get()
-                    .await().toObjects(Category::class.java)
-
+                    .await().map {
+                        Category(
+                            id = it.id,
+                            name = it.data["name"].toString(),
+                            picture = it.data["picture"].toString(),
+                            amount = it.data["amount"].toString(),
+                            voutes = it.data["voutes"].toString()
+                        )
+                    }
                 emit(list)
             } catch (t: Throwable) {
                 Log.d(Constance.TAG, t.message.toString())
@@ -122,11 +132,6 @@ class RemoteData : RemoteDataBase {
                     .await().map {
 
                         val cat = it.data["categories"].toString().toListOfStrings()
-
-                        Log.d(
-                            "it.data[\"categories\"].toString()",
-                            it.data["categories"].toString()
-                        )
                         Transaction(
                             userName = it.data["firstName"].toString(),
                             email = it.data["email"].toString(),

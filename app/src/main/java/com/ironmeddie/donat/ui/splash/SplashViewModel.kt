@@ -30,7 +30,6 @@ class SplashViewModel @Inject constructor(
     val user = _user.asStateFlow()
 
     init {
-        syncData()
         getAuth()
     }
 

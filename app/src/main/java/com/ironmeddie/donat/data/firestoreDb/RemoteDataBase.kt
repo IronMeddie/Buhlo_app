@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface RemoteDataBase {
 
-    fun addCategory()
+    suspend fun addCategory()
 
     suspend fun addTransaction(user: User, purchase: Double,categories: List<Category>)
 

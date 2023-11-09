@@ -16,6 +16,7 @@ class SyncDataUseCase @Inject constructor(
 
     operator fun invoke(): Flow<SyncResult> =
         remoteDB.getCategoryes().flatMapLatest { categories ->
+            db.categoryDao().deleteAll()
             db.categoryDao().insertAll(categories.map { it.toEntity() })
             remoteDB.getCurrentMoney().flatMapLatest { money ->
                 db.currentMoneyDao().insert(money.toEntity())
@@ -34,6 +35,8 @@ class SyncDataUseCase @Inject constructor(
 sealed class SyncResult {
     object Success : SyncResult()
     data class Failure(val message: String) : SyncResult()
+
+    object Loading: SyncResult()
 }
 
 

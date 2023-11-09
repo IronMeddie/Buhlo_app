@@ -56,13 +56,14 @@ fun test(){
 fun CategoryItem(category: Category, isChoosed: Boolean = false, onClick : () -> Unit) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
         .padding(horizontal = 8.dp)
-        .width(52.dp)
-        .height(78.dp)
+        .width(78.dp)
+        .height(100.dp)
         .clip(MaterialTheme.shapes.small)
         .background(if (isChoosed)GreyIconBack else MaterialTheme.colorScheme.background)
         .clickable { onClick() }) {
         Box(
             modifier = Modifier
+                .padding(top = 11.dp)
                 .size(40.dp)
                 .clip(CircleShape)
                 .background(if (!isChoosed)GreyIconBack else MaterialTheme.colorScheme.primary), contentAlignment = Alignment.Center

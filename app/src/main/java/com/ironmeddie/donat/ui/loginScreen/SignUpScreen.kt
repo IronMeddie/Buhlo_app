@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ironmeddie.donat.R
+import com.ironmeddie.donat.domain.SyncResult
 import com.ironmeddie.donat.ui.mainScrreen.components.MyTextField
 import com.ironmeddie.donat.ui.navHost.navigateToMainScreen
 import com.ironmeddie.donat.ui.theme.GreyField
@@ -46,11 +48,12 @@ fun SignUpScreen(navController: NavController, viewModel: LogInViewModel = hiltV
     val firstName = viewModel.firstName.collectAsState().value
     val password = viewModel.password.collectAsState().value
     var isError by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
     LaunchedEffect(key1 = viewModel.eventFLow) {
         viewModel.eventFLow.collectLatest { logged ->
             when (logged) {
                 is Logged.Success -> {
-                    navController.navigateToMainScreen()
+                    viewModel.loadData()
                 }
 
                 is Logged.Failure -> {
@@ -60,6 +63,20 @@ fun SignUpScreen(navController: NavController, viewModel: LogInViewModel = hiltV
                 }
             }
 
+        }
+    }
+
+    LaunchedEffect(key1 = viewModel.syncResult){
+        viewModel.syncResult.collectLatest { result->
+            when(result){
+                is SyncResult.Success -> navController.navigateToMainScreen()
+                is SyncResult.Failure -> {
+                    isLoading = false
+                    isError = result.message
+                    delay(4000)
+                    isError = ""}
+                is SyncResult.Loading -> isLoading = true
+            }
         }
     }
 
@@ -94,6 +111,9 @@ fun SignUpScreen(navController: NavController, viewModel: LogInViewModel = hiltV
             )
             AnimatedVisibility(visible = isError.isNotEmpty()) {
                 Text(text = isError)
+            }
+            AnimatedVisibility(visible = isLoading) {
+                CircularProgressIndicator()
             }
 
             Spacer(modifier = Modifier.height(99.dp))

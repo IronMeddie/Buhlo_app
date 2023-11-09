@@ -10,6 +10,8 @@ data class Category(
     @ColumnInfo(name = "name")val name: String ="",
     @ColumnInfo(name = "picture")val picture: String = "",
     @ColumnInfo(name = "description")val description: String = "",
+    @ColumnInfo(name = "voutes")val voutes: String = "",
+    @ColumnInfo(name = "amount")val amount: String = "",
     @PrimaryKey
     val id : String = ""
 ){
@@ -17,7 +19,9 @@ data class Category(
         name = name,
         picture = picture,
         description = description,
-        id = id
+        id = id,
+        amount = amount,
+        voutes = voutes
     )
 }
 
@@ -26,7 +30,9 @@ fun Category.toEntity() : com.ironmeddie.donat.data.database.entity.Category{
         name = name,
         picture = picture,
         id = id,
-        description = description
+        description = description,
+        amount = amount,
+        voutes = voutes
     )
 
 }
