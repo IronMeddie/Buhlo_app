@@ -148,7 +148,6 @@ fun MainScreen(
                 }
 
                 item(key = "money") {
-                    Spacer(modifier = Modifier.height(32.dp))
                     Box(
                         modifier = Modifier
                             .padding(64.dp)
