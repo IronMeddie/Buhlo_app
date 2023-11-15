@@ -2,16 +2,12 @@ package com.ironmeddie.donat.ui.mainScrreen.components
 
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -22,27 +18,25 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ironmeddie.donat.models.Category
 
 @Composable
-fun CategoryStatistic(categories: List<Category>){
+fun CategoryStatistic(categories: List<Category>) {
 
 
-
-    if (categories.isNotEmpty()){
+    if (categories.isNotEmpty()) {
         val list = categories.sortedByDescending { it.amount }
-        LaunchedEffect(key1 = true){
-            Log.d("checkCode first categori amount", list[0].amount.toString() )
-            Log.d("checkCode first categori name", list[0].name )
-            Log.d("checkCode first categori id", list[0].id )
+        LaunchedEffect(key1 = true) {
+            Log.d("checkCode first categori amount", list[0].amount.toString())
+            Log.d("checkCode first categori name", list[0].name)
+            Log.d("checkCode first categori id", list[0].id)
         }
-        val main = if (list[0].amount> 0) list[0].amount else 1f
-        LazyRow(){
-            items(list){
+        val main = if (list[0].amount > 0) list[0].amount else 1f
+        LazyRow() {
+            items(list) {
                 StatisticItem(category = it, first = main)
             }
         }
@@ -52,15 +46,15 @@ fun CategoryStatistic(categories: List<Category>){
 
 @Preview(showBackground = true)
 @Composable
-private fun Preview(){
+private fun Preview() {
     CategoryStatistic(getCategorys())
 }
 
 @Composable
-fun StatisticItem(category: Category , first: Float){
+fun StatisticItem(category: Category, first: Float) {
 
     val cat = category.amount
-    val height = cat/first
+    val height = cat / first
 
     Column(modifier = Modifier.padding(6.dp), horizontalAlignment = Alignment.CenterHorizontally) {
 
@@ -80,16 +74,16 @@ fun StatisticItem(category: Category , first: Float){
                     .align(Alignment.BottomCenter)
                     .fillMaxHeight(height)
                     .background(MaterialTheme.colorScheme.primary)
-            ){
+            ) {
                 Text(
                     text = category.amount.toString(),
                     style = MaterialTheme.typography.titleSmall,
-                    modifier = Modifier.align(Alignment.TopCenter).padding(top = 7.dp),
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(top = 7.dp),
                     color = MaterialTheme.colorScheme.background,
                 )
             }
-
-
 
 
         }
