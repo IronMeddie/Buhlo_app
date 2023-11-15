@@ -18,6 +18,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,15 +31,19 @@ import com.ironmeddie.donat.models.Category
 import com.ironmeddie.donat.ui.theme.GreyIconBack
 
 @Composable
-fun CategoryRow(categories: List<Category>, currentCategory: Category, onCategoryChange: (Category) -> Unit) {
+fun CategoryRow(
+    categories: List<Category>,
+    currentCategory: List<Category>,
+    onCategoryChange: (Category) -> Unit
+) {
 
-    if (categories.isEmpty()){
+    if (categories.isEmpty()) {
         ProgressBar()
-    }else{
+    } else {
 
         LazyRow(modifier = Modifier.fillMaxWidth()) {
-            items(categories, key = { it.name}) {
-                CategoryItem(it, currentCategory.id == it.id){
+            items(categories, key = { it.name }) {
+                CategoryItem(it, currentCategory.contains(it)) {
                     onCategoryChange(it)
                 }
             }
@@ -45,28 +53,36 @@ fun CategoryRow(categories: List<Category>, currentCategory: Category, onCategor
 
 @Composable
 @Preview
-fun Test(){
+fun Test() {
     val list = getCategorys()
-    CategoryRow(list, list[1]){
+    CategoryRow(list, list) {
 
     }
 }
 
 @Composable
-fun CategoryItem(category: Category, isChoosed: Boolean = false, onClick : () -> Unit) {
+fun CategoryItem(category: Category, isChoosed: Boolean = false, onClick: () -> Unit) {
+
+    var state by remember {
+        mutableStateOf(isChoosed)
+    }
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
         .padding(horizontal = 2.dp)
         .width(78.dp)
         .height(100.dp)
         .clip(MaterialTheme.shapes.small)
-        .background(if (isChoosed)GreyIconBack else MaterialTheme.colorScheme.background)
-        .clickable { onClick() }) {
+        .background(if (state) GreyIconBack else MaterialTheme.colorScheme.background)
+        .clickable {
+            onClick()
+            state = !state
+        }) {
         Box(
             modifier = Modifier
                 .padding(top = 11.dp)
                 .size(40.dp)
                 .clip(CircleShape)
-                .background(if (!isChoosed)GreyIconBack else MaterialTheme.colorScheme.primary), contentAlignment = Alignment.Center
+                .background(if (!state) GreyIconBack else MaterialTheme.colorScheme.primary),
+            contentAlignment = Alignment.Center
         ) {
 //            Icon(
 //                painter = painterResource(id = category.picture),
@@ -83,23 +99,29 @@ fun CategoryItem(category: Category, isChoosed: Boolean = false, onClick : () ->
 
 fun getCategorys(): List<Category> = listOf(
     Category("Виски", "R.drawable.ic_whiskey", id = "0"),
-    Category("Пиво","R.drawable.ic_whiskey", id ="1", amount = 200f),
-    Category("Вино","R.drawable.ic_whiskey", id = "2"),
-    Category("Текила","R.drawable.ic_whiskey", id = "3"),
-    Category( "Шампанское","R.drawable.ic_whiskey", id = "4"),
-    Category( "Водка","R.drawable.ic_whiskey", id = "5"),
-    Category( "Абсент","R.drawable.ic_whiskey", id = "6"),
-    Category( "Ягер","R.drawable.ic_whiskey", id = "7"),
-    )
-
-
+    Category("Пиво", "R.drawable.ic_whiskey", id = "1", amount = 200f),
+    Category("Вино", "R.drawable.ic_whiskey", id = "2"),
+    Category("Текила", "R.drawable.ic_whiskey", id = "3"),
+    Category("Шампанское", "R.drawable.ic_whiskey", id = "4"),
+    Category("Водка", "R.drawable.ic_whiskey", id = "5"),
+    Category("Абсент", "R.drawable.ic_whiskey", id = "6"),
+    Category("Ягер", "R.drawable.ic_whiskey", id = "7"),
+)
 
 
 @Composable
-fun PartHeader(title: String, onClikViewAll : () -> Unit) {
-    Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 11.dp),
-        horizontalArrangement = Arrangement.SpaceBetween) {
-        Text(text = title, style = MaterialTheme.typography.headlineLarge, color = MaterialTheme.colorScheme.primary)
+fun PartHeader(title: String, onClikViewAll: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 11.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.primary
+        )
 //        Text(text = stringResource(R.string.view_all), modifier = Modifier.clickable { onClikViewAll() } , style = MaterialTheme.typography.h2, fontSize = 9.sp, color = OnotherOneGrey)
     }
 }
