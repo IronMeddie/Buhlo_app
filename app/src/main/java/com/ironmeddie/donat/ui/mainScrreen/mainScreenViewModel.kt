@@ -16,7 +16,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -35,8 +34,7 @@ class MainScreenViewModel @Inject constructor(
     private val _transactions = MutableStateFlow(listOf<Transaction>())
     val transactions = _transactions.asStateFlow()
 
-//    private val _currentcategory = MutableStateFlow(mutableListOf<Category>())
-//    val currentcategory = _currentcategory.asStateFlow()
+    private val _currentcategory = mutableListOf<Category>()
 
     private val _search = MutableStateFlow("")
     val search = _search.asStateFlow()
@@ -64,26 +62,37 @@ class MainScreenViewModel @Inject constructor(
     }
 
     private fun getData() {
+        syncTransactions()
+        syncMoney()
+        getCategories("")
+    }
+
+    private var job: Job? = null
+
+    private fun syncTransactions() {
         viewModelScope.launch {
-            getTransactions().combine(getMoney()) { tr, mon ->
-                Pair(tr, mon)
-            }.combine(useCase()) { pair, cat ->
-                Pair(pair, cat)
-            }.collectLatest {
-                _currentMoney.value = it.first.second.money.toString()
-                _transactions.value = it.first.first
-                _categories.value = it.second
+            getTransactions().collectLatest {
+                _transactions.value = it
             }
         }
     }
 
-    private var job: Job? = null
+    private fun syncMoney() {
+        viewModelScope.launch {
+            getMoney().collectLatest {
+                _currentMoney.value = it.money.toString()
+            }
+        }
+    }
 
     fun getCategories(str: String) {
         job = null
         job = viewModelScope.launch {
             useCase(str).collect() {
-                _categories.value = it
+                _categories.value = it.map { cat ->
+                    val el = _currentcategory.firstOrNull { it.id == cat.id }
+                    if (el != null) cat.copy(isChoosed = true) else cat
+                }
                 job = null
             }
         }
@@ -100,10 +109,16 @@ class MainScreenViewModel @Inject constructor(
     }
 
     fun changeCategory(category: Category) {
-        _categories.value = categories.value.map { if (it.id == category.id) it.copy(isChoosed = !it.isChoosed) else it }
+        _categories.value =
+            categories.value.map { if (it.id == category.id) it.copy(isChoosed = !it.isChoosed) else it }
+        _currentcategory.apply {
+            if (!contains(category)) add(category) else remove(category)
+        }
+
     }
+
     fun clearAllCategories() {
-        _categories.value = categories.value.map { it.copy(isChoosed = false)  }
+        _categories.value = categories.value.map { it.copy(isChoosed = false) }
     }
 
     fun search(str: String) {
