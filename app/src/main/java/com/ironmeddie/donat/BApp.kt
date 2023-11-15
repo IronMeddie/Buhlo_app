@@ -1,6 +1,7 @@
 package com.ironmeddie.donat
 
 import android.app.Application
+import com.ironmeddie.donat.utils.Secret
 import dagger.hilt.android.HiltAndroidApp
 import io.appmetrica.analytics.AppMetrica
 import io.appmetrica.analytics.AppMetricaConfig
@@ -10,7 +11,7 @@ class BApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        val config = AppMetricaConfig.newConfigBuilder("f1a1422e-b619-426e-a860-6b76caa20c18")
+        val config = AppMetricaConfig.newConfigBuilder(Secret.API_KEY)
 
             .build()
         AppMetrica.activate(this, config)
