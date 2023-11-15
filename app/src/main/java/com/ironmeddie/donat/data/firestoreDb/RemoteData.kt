@@ -111,7 +111,7 @@ class RemoteData : RemoteDataBase {
                             id = it.id,
                             name = it.data["name"].toString(),
                             picture = it.data["picture"].toString(),
-                            amount = it.data["amount"].toString(),
+                            amount = it.data["amount"].toString().toFloat(),
                             voutes = it.data["voutes"].toString()
                         )
                     }

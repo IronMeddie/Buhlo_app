@@ -1,5 +1,6 @@
 package com.ironmeddie.donat.data.database
 
+
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.ironmeddie.donat.data.database.dao.CategoryDao
@@ -21,4 +22,12 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun transactionDao(): TransactionDao
 
 }
+
+//interface RoomDBBase{
+//
+//    fun <T>dbSafeCall(getDb: () -> Flow<T>): Flow<T> =
+//        getDb().catch {
+//            AppMetrica.reportError("db", it)
+//        }
+//}
 

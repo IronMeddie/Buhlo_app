@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,6 +18,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,14 +31,16 @@ import com.ironmeddie.donat.models.Category
 @Composable
 fun CategoryStatistic(categories: List<Category>){
 
+
+
     if (categories.isNotEmpty()){
         val list = categories.sortedByDescending { it.amount }
-        val main =
-            if (categories[0].amount.isNotBlank() && categories[0].amount != "0")
-                categories[0].amount.toFloat()
-            else 1f
-
-
+        LaunchedEffect(key1 = true){
+            Log.d("checkCode first categori amount", list[0].amount.toString() )
+            Log.d("checkCode first categori name", list[0].name )
+            Log.d("checkCode first categori id", list[0].id )
+        }
+        val main = if (list[0].amount> 0) list[0].amount else 1f
         LazyRow(){
             items(list){
                 StatisticItem(category = it, first = main)
@@ -54,8 +58,10 @@ private fun Preview(){
 
 @Composable
 fun StatisticItem(category: Category , first: Float){
-    val height = if (category.amount.isNotBlank()) category.amount.toFloat() /  first
-    else 0f
+
+    val cat = category.amount
+    val height = cat/first
+
     Column(modifier = Modifier.padding(6.dp), horizontalAlignment = Alignment.CenterHorizontally) {
 
         Box(
@@ -74,20 +80,25 @@ fun StatisticItem(category: Category , first: Float){
                     .align(Alignment.BottomCenter)
                     .fillMaxHeight(height)
                     .background(MaterialTheme.colorScheme.primary)
-            ) {
+            ){
+                Text(
+                    text = category.amount.toString(),
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.align(Alignment.TopCenter).padding(top = 7.dp),
+                    color = MaterialTheme.colorScheme.background,
+                )
             }
 
-            Text(text = category.name,
-                modifier =
-                Modifier
-                    .height(100.dp)
-                    .align(Alignment.BottomCenter)
-                    .rotate(270f),
-                maxLines = 1
 
-            )
+
 
         }
+        Text(
+            text = category.name,
+            style = MaterialTheme.typography.titleSmall,
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            color = MaterialTheme.colorScheme.onBackground
+        )
 
 
     }

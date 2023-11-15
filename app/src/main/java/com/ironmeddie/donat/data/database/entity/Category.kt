@@ -11,7 +11,7 @@ data class Category(
     @ColumnInfo(name = "picture")val picture: String = "",
     @ColumnInfo(name = "description")val description: String = "",
     @ColumnInfo(name = "voutes")val voutes: String = "",
-    @ColumnInfo(name = "amount")val amount: String = "",
+    @ColumnInfo(name = "amount")val amount: Float = 0f,
     @PrimaryKey
     val id : String = ""
 ){
