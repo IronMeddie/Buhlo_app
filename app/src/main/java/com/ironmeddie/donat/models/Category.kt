@@ -6,5 +6,6 @@ data class Category(
     val description: String = "",
     val id : String = "",
     val amount: Float = 0f,
-    val voutes: String = "0"
+    val voutes: String = "0",
+    val isChoosed: Boolean = false
 )

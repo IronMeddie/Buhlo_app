@@ -18,22 +18,19 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.ironmeddie.donat.models.Category
 import com.ironmeddie.donat.ui.theme.GreyIconBack
+import com.ironmeddie.donat.ui.theme.GreyText
 
 @Composable
 fun CategoryRow(
     categories: List<Category>,
-    currentCategory: List<Category>,
     onCategoryChange: (Category) -> Unit
 ) {
 
@@ -43,7 +40,7 @@ fun CategoryRow(
 
         LazyRow(modifier = Modifier.fillMaxWidth()) {
             items(categories, key = { it.name }) {
-                CategoryItem(it, currentCategory.contains(it)) {
+                CategoryItem(it) {
                     onCategoryChange(it)
                 }
             }
@@ -55,33 +52,29 @@ fun CategoryRow(
 @Preview
 fun Test() {
     val list = getCategorys()
-    CategoryRow(list, list) {
+    CategoryRow(list) {
 
     }
 }
 
 @Composable
-fun CategoryItem(category: Category, isChoosed: Boolean = false, onClick: () -> Unit) {
+fun CategoryItem(category: Category, onClick: () -> Unit) {
 
-    var state by remember {
-        mutableStateOf(isChoosed)
-    }
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
         .padding(horizontal = 2.dp)
         .width(78.dp)
         .height(100.dp)
         .clip(MaterialTheme.shapes.small)
-        .background(if (state) GreyIconBack else MaterialTheme.colorScheme.background)
+        .background(if (category.isChoosed) GreyIconBack else MaterialTheme.colorScheme.background)
         .clickable {
             onClick()
-            state = !state
         }) {
         Box(
             modifier = Modifier
                 .padding(top = 11.dp)
                 .size(40.dp)
                 .clip(CircleShape)
-                .background(if (!state) GreyIconBack else MaterialTheme.colorScheme.primary),
+                .background(if (!category.isChoosed) GreyIconBack else MaterialTheme.colorScheme.primary),
             contentAlignment = Alignment.Center
         ) {
 //            Icon(
@@ -110,7 +103,7 @@ fun getCategorys(): List<Category> = listOf(
 
 
 @Composable
-fun PartHeader(title: String, onClikViewAll: () -> Unit) {
+fun PartHeader(title: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -122,6 +115,27 @@ fun PartHeader(title: String, onClikViewAll: () -> Unit) {
             style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.primary
         )
-//        Text(text = stringResource(R.string.view_all), modifier = Modifier.clickable { onClikViewAll() } , style = MaterialTheme.typography.h2, fontSize = 9.sp, color = OnotherOneGrey)
+    }
+}
+
+@Composable
+fun PartHeaderCategories(title: String, onClikViewAll: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 11.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.primary
+        )
+        Text(
+            text = "убрать все",
+            modifier = Modifier.clickable { onClikViewAll() },
+            style = MaterialTheme.typography.headlineMedium,
+            fontSize = 9.sp,
+            color = GreyText)
     }
 }

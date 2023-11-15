@@ -41,6 +41,7 @@ import com.ironmeddie.donat.ui.mainScrreen.components.CategoryRow
 import com.ironmeddie.donat.ui.mainScrreen.components.CategoryStatistic
 import com.ironmeddie.donat.ui.mainScrreen.components.MyTextField
 import com.ironmeddie.donat.ui.mainScrreen.components.PartHeader
+import com.ironmeddie.donat.ui.mainScrreen.components.PartHeaderCategories
 import com.ironmeddie.donat.ui.mainScrreen.components.SearchPanel
 import com.ironmeddie.donat.ui.mainScrreen.components.TransactionItem
 import com.ironmeddie.donat.ui.navHost.navigateToProfile
@@ -57,7 +58,6 @@ fun MainScreen(
 
     val categories = viewModel.categories.collectAsState().value
     val transactions = viewModel.transactions.collectAsState().value
-    val currentCategory = viewModel.currentcategory.collectAsState().value
     val search = viewModel.search.collectAsState().value
     val summ = viewModel.summ.collectAsState().value
     val currentMoney = viewModel.currentMoney.collectAsState().value
@@ -91,13 +91,13 @@ fun MainScreen(
                 }
                 item(key = "categories header") {
                     Spacer(modifier = Modifier.height(12.dp))
-                    PartHeader("Категории") {
-
+                    PartHeaderCategories("Категории") {
+                        viewModel.clearAllCategories()
                     }
                     Spacer(modifier = Modifier.height(22.dp))
                 }
                 item(key = "categories row") {
-                    CategoryRow(categories, currentCategory) {
+                    CategoryRow(categories) {
                         viewModel.changeCategory(it)
                     }
                 }
@@ -105,9 +105,7 @@ fun MainScreen(
                 item {
                     Column {
                         Spacer(modifier = Modifier.height(26.dp))
-                        PartHeader(title = "Перевести деньги") {
-
-                        }
+                        PartHeader(title = "Перевести деньги")
                         Spacer(modifier = Modifier.height(26.dp))
                     }
                     }
@@ -183,9 +181,7 @@ fun MainScreen(
                     CategoryStatistic(categories)
                 }
 
-                item { PartHeader(title = "Переводы") {
-
-                } }
+                item { PartHeader(title = "Переводы") }
 
                 items(transactions, key = { it.id }) {
                     TransactionItem(transaction = it)
