@@ -40,7 +40,7 @@ class RemoteData : RemoteDataBase {
             }
         } catch (t: Throwable) {
             Log.d(Constance.TAG, t.message.toString())
-            AppMetrica.reportError("firebase", t)
+            AppMetrica.reportError(Constance.ERROR_FIRESTORE, t)
         }
     }
 
@@ -57,19 +57,22 @@ class RemoteData : RemoteDataBase {
                 .add(transaction)
                 .await()
 
-            db.collection(NodesDocumetsFields.NODE_MONEY).document(NodesDocumetsFields.DOCUMENT_MONEY).update(NodesDocumetsFields.FIELD_MONEY, FieldValue.increment(purchase))
+            db.collection(NodesDocumetsFields.NODE_MONEY)
+                .document(NodesDocumetsFields.DOCUMENT_MONEY)
+                .update(NodesDocumetsFields.FIELD_MONEY, FieldValue.increment(purchase))
                 .await()
 
-            val amount = if (categories.size>0)purchase/categories.size else purchase
+            val amount = if (categories.size > 0) purchase / categories.size else purchase
 
             categories.forEach {
-                db.collection(NodesDocumetsFields.NODE_CATEGORY).document(it.id).update(NodesDocumetsFields.FIELD_AMOUNT, FieldValue.increment(amount))
+                db.collection(NodesDocumetsFields.NODE_CATEGORY).document(it.id)
+                    .update(NodesDocumetsFields.FIELD_AMOUNT, FieldValue.increment(amount))
                     .await()
 
-                db.collection(NodesDocumetsFields.NODE_CATEGORY).document(it.id).update(NodesDocumetsFields.FIELD_VOUTES, FieldValue.increment(1))
+                db.collection(NodesDocumetsFields.NODE_CATEGORY).document(it.id)
+                    .update(NodesDocumetsFields.FIELD_VOUTES, FieldValue.increment(1))
                     .await()
             }
-
 
 
             val event: HashMap<String, Any> = hashMapOf(
@@ -80,7 +83,7 @@ class RemoteData : RemoteDataBase {
 
         } catch (t: Throwable) {
             Log.d(Constance.TAG, t.message.toString())
-            AppMetrica.reportError("firebase", t)
+            AppMetrica.reportError(Constance.ERROR_TRANSACTION, t)
         }
     }
 
@@ -94,7 +97,7 @@ class RemoteData : RemoteDataBase {
 
         } catch (t: Throwable) {
             Log.d(Constance.TAG, t.message.toString())
-            AppMetrica.reportError("firebase", t)
+            AppMetrica.reportError(Constance.ERROR_FIRESTORE, t)
         }
     }
 
@@ -103,7 +106,7 @@ class RemoteData : RemoteDataBase {
 
         return flow<List<Category>> {
             try {
-                val list: List<Category> =db
+                val list: List<Category> = db
                     .collection(NodesDocumetsFields.NODE_CATEGORY)
                     .get()
                     .await().map {
@@ -118,7 +121,7 @@ class RemoteData : RemoteDataBase {
                 emit(list)
             } catch (t: Throwable) {
                 Log.d(Constance.TAG, t.message.toString())
-                AppMetrica.reportError("firebase", t)
+                AppMetrica.reportError(Constance.ERROR_FIRESTORE, t)
             }
 
         }
@@ -134,7 +137,8 @@ class RemoteData : RemoteDataBase {
                     .get()
                     .await().map {
 
-                        val cat = it.data[NodesDocumetsFields.FIELD_CATEGORIES].toString().toListOfStrings()
+                        val cat = it.data[NodesDocumetsFields.FIELD_CATEGORIES].toString()
+                            .toListOfStrings()
                         Transaction(
                             userName = it.data[NodesDocumetsFields.FIELD_FIRSTNAME].toString(),
                             email = it.data[NodesDocumetsFields.FIELD_EMAIL].toString(),
@@ -149,14 +153,14 @@ class RemoteData : RemoteDataBase {
                 emit(list)
             } catch (t: Throwable) {
                 Log.d(Constance.TAG, t.message.toString())
-                AppMetrica.reportError("firebase", t)
+                AppMetrica.reportError(Constance.ERROR_TRANSACTION, t)
             }
 
         }
     }
 }
 
-object NodesDocumetsFields{
+object NodesDocumetsFields {
 
     // nodes
     const val NODE_CATEGORY = "alc_categories"
@@ -181,7 +185,6 @@ object NodesDocumetsFields{
     const val FIELD_PICTURE = "picture"
     const val FIELD_DESCRIPTION = "description"
     const val FIELD_NAME = "name"
-
 
 
 }
