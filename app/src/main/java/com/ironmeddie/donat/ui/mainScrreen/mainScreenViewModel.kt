@@ -34,7 +34,7 @@ class MainScreenViewModel @Inject constructor(
     private val _transactions = MutableStateFlow(listOf<Transaction>())
     val transactions = _transactions.asStateFlow()
 
-    private val _currentcategory = mutableListOf<Category>()
+    private val _currentcategory = mutableListOf<String>()
 
     private val _search = MutableStateFlow("")
     val search = _search.asStateFlow()
@@ -90,7 +90,7 @@ class MainScreenViewModel @Inject constructor(
         job = viewModelScope.launch {
             useCase(str).collect() {
                 _categories.value = it.map { cat ->
-                    val el = _currentcategory.firstOrNull { it.id == cat.id }
+                    val el = _currentcategory.firstOrNull { it == cat.id }
                     if (el != null) cat.copy(isChoosed = true) else cat
                 }
                 job = null
@@ -112,7 +112,7 @@ class MainScreenViewModel @Inject constructor(
         _categories.value =
             categories.value.map { if (it.id == category.id) it.copy(isChoosed = !it.isChoosed) else it }
         _currentcategory.apply {
-            if (!contains(category)) add(category) else remove(category)
+            if (!contains(category.id)) add(category.id) else remove(category.id)
         }
 
     }
