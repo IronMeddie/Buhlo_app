@@ -287,7 +287,8 @@ fun ProfileListItem(
             ) {
                 Icon(
                     painter = painterResource(id = icon),
-                    contentDescription = "profile list item icon"
+                    contentDescription = "profile list item icon",
+                    Modifier.size(21.dp)
                 )
             }
             Spacer(modifier = Modifier.width(6.dp))
