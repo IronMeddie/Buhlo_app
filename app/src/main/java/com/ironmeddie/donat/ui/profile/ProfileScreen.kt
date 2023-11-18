@@ -168,7 +168,7 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hi
 //
                 item {
                     Spacer(modifier = Modifier.height(36.dp))
-                    Text(text = result)
+                    Text(text = result, modifier = Modifier.align(Alignment.Center))
                 }
 
                 item {
