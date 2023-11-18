@@ -167,7 +167,7 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hi
                             modifier = Modifier
                                 .padding(24.dp)
                                 .fillMaxWidth()
-                                .height(35.dp)
+                                .height(32.dp)
                                 .clip(MaterialTheme.shapes.medium)
                                 .shadow(12.dp, MaterialTheme.shapes.medium)
                                 .background(GreyField)
