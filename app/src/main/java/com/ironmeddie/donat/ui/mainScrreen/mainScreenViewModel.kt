@@ -119,6 +119,7 @@ class MainScreenViewModel @Inject constructor(
 
     fun clearAllCategories() {
         _categories.value = categories.value.map { it.copy(isChoosed = false) }
+        _currentcategory.clear()
     }
 
     fun search(str: String) {
