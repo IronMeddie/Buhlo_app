@@ -50,8 +50,6 @@ class SignInViewModel @Inject constructor(
                     firstName = _firstName.value,
                     lastName = _lastName.value,
                     email = _email.value,
-                    password = "",
-                    avatar = ""
                 )
                 registration(_email.value, _lastName.value, user).collectLatest {
 

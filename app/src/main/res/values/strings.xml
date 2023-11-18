@@ -25,4 +25,7 @@
     <string name="restore_purchase">Restore Purchase</string>
     <string name="help">Help</string>
     <string name="log_out">Log out</string>
+    <string name="change_username">change username</string>
+    <string name="firstname">firstname</string>
+    <string name="change">change</string>
 </resources>

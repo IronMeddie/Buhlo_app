@@ -7,5 +7,6 @@ data class Category(
     val id : String = "",
     val amount: Float = 0f,
     val voutes: String = "0",
-    val isChoosed: Boolean = false
+    val isChoosed: Boolean = false,
+    val category: String = ""
 )

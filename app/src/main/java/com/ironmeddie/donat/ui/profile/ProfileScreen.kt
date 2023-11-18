@@ -3,10 +3,14 @@ package com.ironmeddie.donat.ui.profile
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +27,8 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,6 +41,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -43,20 +51,59 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import com.google.firebase.auth.FirebaseUser
 import com.ironmeddie.donat.R
 import com.ironmeddie.donat.data.auth.AuthResult
+import com.ironmeddie.donat.ui.mainScrreen.components.MyTextField
 import com.ironmeddie.donat.ui.navHost.navigateToLoginScreen
+import com.ironmeddie.donat.ui.theme.Border
 import com.ironmeddie.donat.ui.theme.GreyIconBack
+import com.ironmeddie.donat.ui.theme.NameProfile
+import com.ironmeddie.donat.ui.theme.OnotherOneGrey
+import com.ironmeddie.donat.ui.theme.TransparentWhite
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hiltViewModel()) {
     val scope = rememberCoroutineScope()
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    val user: FirebaseUser? = viewModel.user.collectAsState().value
+    val firstname = viewModel.firstName.collectAsState().value
 
-    val signOut = viewModel._logOut.collectAsState().value
+    var result by remember {
+        mutableStateOf("")
+    }
+
+    var isTextFieldNeeded by remember {
+        mutableStateOf(false)
+    }
+
+
+    val signOut = viewModel.logOut.collectAsState().value
     LaunchedEffect(key1 = signOut) {
         if (signOut is AuthResult.Success) navController.navigateToLoginScreen()
+    }
+
+    LaunchedEffect(key1 = viewModel.uploadResult) {
+        viewModel.uploadResult.collect {
+            when (it) {
+                is AuthResult.Failure -> {
+                    result = it.message
+                }
+
+                is AuthResult.Success -> {
+                    result = "Данные обновлены"
+                    delay(2000)
+                    result = ""
+                }
+
+                is AuthResult.Loading -> {
+                    result = "загрузка"
+                }
+            }
+        }
     }
 
     val context = LocalContext.current
@@ -71,135 +118,123 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hi
 
                 scope.launch {
                     selectedImageUri = uri
-                    viewModel.updateUser(uri, "")
+                    viewModel.updateUser(uri)
                 }
             })
 
-    val user = viewModel.user.collectAsState().value
+    Box {
 
 
-    Scaffold(modifier = Modifier.fillMaxSize()) {
-        LazyColumn(modifier = Modifier.padding(it)) {
-            item { ProfileTopBar() { navController.navigateUp() } }
+        Scaffold(modifier = Modifier.fillMaxSize()) {
 
-//            item {
-//                Column(
-//                    modifier = Modifier.fillMaxWidth(),
-//                    horizontalAlignment = Alignment.CenterHorizontally
-//                ) {
-//                    AsyncImage(
-//                        model = if (selectedImageUri == null) {
-//                            if (!user?.avatar.isNullOrBlank()) user?.avatar else R.drawable.avatar
-//                        } else selectedImageUri, contentDescription = "user avatar",
-//                        modifier = Modifier
-//                            .clip(CircleShape)
-//                            .size(61.dp)
-//                            .border(1.dp, Border, CircleShape), contentScale = ContentScale.Crop
-//                    )
-//                    Text(
-//                        text = stringResource(R.string.change_photo),
-//                        fontWeight = FontWeight.W500,
-//                        fontSize = 8.sp,
-//                        color = OnotherOneGrey,
-//                        modifier = Modifier.clickable {
-//                            contract.launch(
-//                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
-//                            )
-//                        }
-//                    )
-//                    Spacer(modifier = Modifier.height(17.dp))
-//                    Text(
-//                        text = stringResource(R.string.name),
-//                        style = MaterialTheme.typography.headlineSmall,
-//                        fontSize = 15.sp,
-//                        color = NameProfile
-//                    )
-//                }
-//            }
-//
-//            item { Spacer(modifier = Modifier.height(36.dp)) }
-//            item {
-//                Button(
-//                    onClick = {
-//
-//                    }, modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(horizontal = 43.dp)
-//                        .height(40.dp)
-//                        .background(MaterialTheme.colorScheme.background)
-//                ) {
-//                    Row() {
-//                        Icon(
-//                            painter = painterResource(id = R.drawable.share),
-//                            contentDescription = "upload icon"
-//                        )
-//                        Spacer(modifier = Modifier.width(30.dp))
-//                        Text(text = stringResource(R.string.upload_item))
-//                        Spacer(modifier = Modifier.width(45.dp))
-//                    }
-//                }
-//                Spacer(modifier = Modifier.height(4.dp))
-//            }
-//
-//
-//
-//            item {
-//                ProfileListItem(stringResource(R.string.trade_store), R.drawable.credit_card, {}) {
-//                    Icon(
-//                        painter = painterResource(id = R.drawable.arrow_next),
-//                        contentDescription = "arrow"
-//                    )
-//                }
-//            }
-//            item {
-//                ProfileListItem(
-//                    stringResource(R.string.payment_method),
-//                    R.drawable.credit_card,
-//                    {}) {
-//                    Icon(
-//                        painter = painterResource(id = R.drawable.arrow_next),
-//                        contentDescription = "arrow"
-//                    )
-//                }
-//            }
-//            item {
-//                ProfileListItem(stringResource(R.string.balance), R.drawable.credit_card, {}) {
-//                    Text(
-//                        text = "$ 1593", fontWeight = FontWeight.W500,
-//                        fontSize = 14.sp, color = MaterialTheme.colorScheme.onBackground
-//                    )
-//                }
-//            }
-//            item {
-//                ProfileListItem(
-//                    stringResource(R.string.trade_history),
-//                    R.drawable.credit_card,
-//                    {}) {
-//                    Icon(
-//                        painter = painterResource(id = R.drawable.arrow_next),
-//                        contentDescription = "arrow"
-//                    )
-//                }
-//            }
-//            item {
-//                ProfileListItem(
-//                    stringResource(R.string.restore_purchase),
-//                    R.drawable.group_92,
-//                    {}) {
-//                    Icon(
-//                        painter = painterResource(id = R.drawable.arrow_next),
-//                        contentDescription = "arrow"
-//                    )
-//                }
-//            }
-//            item { ProfileListItem(stringResource(R.string.help), R.drawable.help, {}) {} }
-            item {
-                ProfileListItem(stringResource(R.string.log_out), R.drawable.log_in, {
-                    viewModel.logOut()
+            LazyColumn(modifier = Modifier.padding(it)) {
+                item { ProfileTopBar() { navController.navigateUp() } }
 
-                }) {}
+                item {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        AsyncImage(
+                            model = if (selectedImageUri == null) {
+                                if (!user?.photoUrl?.scheme.isNullOrBlank()) user?.photoUrl else R.drawable.avatar
+                            } else selectedImageUri, contentDescription = "user avatar",
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .size(61.dp)
+                                .border(1.dp, Border, CircleShape), contentScale = ContentScale.Crop
+                        )
+                        Text(
+                            text = stringResource(R.string.change_photo),
+                            fontWeight = FontWeight.W500,
+                            fontSize = 8.sp,
+                            color = OnotherOneGrey,
+                            modifier = Modifier.clickable {
+                                contract.launch(
+                                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
+                                )
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(17.dp))
+                        Text(
+                            text = user?.displayName ?: user?.email.orEmpty(),
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontSize = 15.sp,
+                            color = NameProfile
+                        )
+                    }
+                }
+//
+                item {
+                    Spacer(modifier = Modifier.height(36.dp))
+                    Text(text = result)
+                }
+
+                item {
+                    AnimatedVisibility(visible = isTextFieldNeeded) {
+                        Box(
+                            modifier = Modifier
+                                .padding(24.dp)
+                                .fillMaxWidth()
+                                .height(40.dp)
+                                .clip(MaterialTheme.shapes.medium)
+                                .shadow(12.dp, MaterialTheme.shapes.medium)
+                                .background(MaterialTheme.colorScheme.background)
+                        ) {
+                            MyTextField(
+                                value = firstname,
+                                hint = stringResource(R.string.firstname),
+                                onValueChange = viewModel::firstnameChange,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                            )
+                        }
+                    }
+
+
+                }
+                item {
+                    AnimatedVisibility(visible = isTextFieldNeeded && firstname.isNotBlank()) {
+                        Button(
+                            onClick = {
+                                viewModel.uploadNewFirstName()
+                                result = "loading"
+                            }, modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(24.dp)
+                                .height(46.dp),
+                            enabled = user?.displayName != firstname && firstname.isNotBlank()
+                        ) {
+                            Text(text = stringResource(R.string.change))
+                        }
+                    }
+                }
+
+
+                item {
+                    ProfileListItem(
+                        stringResource(R.string.change_username),
+                        R.drawable.credit_card,
+                        { isTextFieldNeeded = !isTextFieldNeeded }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.arrow_next),
+                            contentDescription = "arrow"
+                        )
+                    }
+                }
+
+                item {
+                    ProfileListItem(stringResource(R.string.log_out), R.drawable.log_in, {
+                        viewModel.logOut()
+
+                    }) {}
+                }
+
             }
-
+        }
+        if (result == "loading")
+        Box(Modifier.fillMaxSize().background(TransparentWhite), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
         }
     }
 }

@@ -34,23 +34,37 @@ class Auth() : Authorization {
 
     }
 
-    override fun changeUserInfo(user: User): Flow<AuthResult> = flow {
+    override fun changeAvater(photoUri: Uri): Flow<AuthResult> = flow {
 
         try {
             val firebaseUser = Firebase.auth.currentUser
 
             val profileUpdates = userProfileChangeRequest {
-                displayName = user.firstName
-                photoUri = Uri.parse(user.avatar)
+                this.photoUri = photoUri
             }
 
             firebaseUser!!.updateProfile(profileUpdates).await()
             emit(AuthResult.Success)
         } catch (t: Throwable) {
-            AppMetrica.reportError("logOut", t)
+            AppMetrica.reportError("changePhoto", t)
             emit(AuthResult.Failure(t.message.toString()))
         }
 
+    }
+
+    override fun changeFirstName(name: String): Flow<AuthResult> = flow {
+        try {
+            val firebaseUser = Firebase.auth.currentUser
+
+            val profileUpdates = userProfileChangeRequest {
+                this.displayName = name
+            }
+            firebaseUser!!.updateProfile(profileUpdates).await()
+            emit(AuthResult.Success)
+        } catch (t: Throwable) {
+            AppMetrica.reportError("changePhoto", t)
+            emit(AuthResult.Failure(t.message.toString()))
+        }
     }
 
     override fun logOut(): Flow<AuthResult> = flow {
@@ -67,14 +81,10 @@ class Auth() : Authorization {
 
         try {
             auth.createUserWithEmailAndPassword(login, password).await()
-
             val firebaseUser = Firebase.auth.currentUser
-
-
             val profileUpdates = userProfileChangeRequest {
                 displayName = user.firstName
             }
-
             firebaseUser!!.updateProfile(profileUpdates).await()
             emit(AuthResult.Success)
         } catch (e: Throwable) {
