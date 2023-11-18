@@ -58,6 +58,7 @@ import com.ironmeddie.donat.data.auth.AuthResult
 import com.ironmeddie.donat.ui.mainScrreen.components.MyTextField
 import com.ironmeddie.donat.ui.navHost.navigateToLoginScreen
 import com.ironmeddie.donat.ui.theme.Border
+import com.ironmeddie.donat.ui.theme.GreyField
 import com.ironmeddie.donat.ui.theme.GreyIconBack
 import com.ironmeddie.donat.ui.theme.NameProfile
 import com.ironmeddie.donat.ui.theme.OnotherOneGrey
@@ -172,23 +173,19 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hi
 
                 item {
                     AnimatedVisibility(visible = isTextFieldNeeded) {
-                        Box(
-                            modifier = Modifier
-                                .padding(24.dp)
-                                .fillMaxWidth()
-                                .height(40.dp)
-                                .clip(MaterialTheme.shapes.medium)
-                                .shadow(12.dp, MaterialTheme.shapes.medium)
-                                .background(MaterialTheme.colorScheme.background)
-                        ) {
                             MyTextField(
                                 value = firstname,
                                 hint = stringResource(R.string.firstname),
                                 onValueChange = viewModel::firstnameChange,
                                 modifier = Modifier
-                                    .fillMaxSize()
+                                    .padding(24.dp)
+                                    .fillMaxWidth()
+                                    .height(35.dp)
+                                    .clip(MaterialTheme.shapes.medium)
+                                    .shadow(12.dp, MaterialTheme.shapes.medium)
+                                    .background(GreyField)
                             )
-                        }
+
                     }
 
 
