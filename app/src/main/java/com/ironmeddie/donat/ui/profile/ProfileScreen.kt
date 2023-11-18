@@ -145,17 +145,6 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hi
                                 .size(61.dp)
                                 .border(1.dp, Border, CircleShape), contentScale = ContentScale.Crop
                         )
-                        Text(
-                            text = stringResource(R.string.change_photo),
-                            fontWeight = FontWeight.W500,
-                            fontSize = 8.sp,
-                            color = OnotherOneGrey,
-                            modifier = Modifier.clickable {
-                                contract.launch(
-                                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
-                                )
-                            }
-                        )
                         Spacer(modifier = Modifier.height(17.dp))
                         Text(
                             text = user?.displayName ?: user?.email.orEmpty(),
@@ -165,7 +154,6 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hi
                         )
                     }
                 }
-//
                 item {
                     Spacer(modifier = Modifier.height(36.dp))
                     Text(text = result, modifier = Modifier.align(Alignment.Center))
@@ -219,18 +207,39 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hi
                         )
                     }
                 }
+                item {
+                    ProfileListItem(
+                        stringResource(id = R.string.change_photo),
+                        R.drawable.photo,
+                        { contract.launch(
+                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
+                        )}) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.arrow_next),
+                            contentDescription = "arrow"
+                        )
+                    }
+                }
 
                 item {
                     ProfileListItem(stringResource(R.string.log_out), R.drawable.log_in, {
                         viewModel.logOut()
 
-                    }) {}
+                    }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.arrow_next),
+                            contentDescription = "arrow"
+                        )
+                    }
                 }
 
             }
         }
         if (result == "loading")
-        Box(Modifier.fillMaxSize().background(TransparentWhite), contentAlignment = Alignment.Center) {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(TransparentWhite), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
         }
     }
