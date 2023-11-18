@@ -61,7 +61,6 @@ import com.ironmeddie.donat.ui.theme.Border
 import com.ironmeddie.donat.ui.theme.GreyField
 import com.ironmeddie.donat.ui.theme.GreyIconBack
 import com.ironmeddie.donat.ui.theme.NameProfile
-import com.ironmeddie.donat.ui.theme.OnotherOneGrey
 import com.ironmeddie.donat.ui.theme.TransparentWhite
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -161,18 +160,18 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hi
 
                 item {
                     AnimatedVisibility(visible = isTextFieldNeeded) {
-                            MyTextField(
-                                value = firstname,
-                                hint = stringResource(R.string.firstname),
-                                onValueChange = viewModel::firstnameChange,
-                                modifier = Modifier
-                                    .padding(24.dp)
-                                    .fillMaxWidth()
-                                    .height(35.dp)
-                                    .clip(MaterialTheme.shapes.medium)
-                                    .shadow(12.dp, MaterialTheme.shapes.medium)
-                                    .background(GreyField)
-                            )
+                        MyTextField(
+                            value = firstname,
+                            hint = stringResource(R.string.firstname),
+                            onValueChange = viewModel::firstnameChange,
+                            modifier = Modifier
+                                .padding(24.dp)
+                                .fillMaxWidth()
+                                .height(35.dp)
+                                .clip(MaterialTheme.shapes.medium)
+                                .shadow(12.dp, MaterialTheme.shapes.medium)
+                                .background(GreyField)
+                        )
 
                     }
 
@@ -211,9 +210,11 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hi
                     ProfileListItem(
                         stringResource(id = R.string.change_photo),
                         R.drawable.photo,
-                        { contract.launch(
-                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
-                        )}) {
+                        {
+                            contract.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
+                            )
+                        }) {
                         Icon(
                             painter = painterResource(id = R.drawable.arrow_next),
                             contentDescription = "arrow"
@@ -236,12 +237,13 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hi
             }
         }
         if (result == "loading")
-        Box(
-            Modifier
-                .fillMaxSize()
-                .background(TransparentWhite), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .background(TransparentWhite), contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
     }
 }
 
