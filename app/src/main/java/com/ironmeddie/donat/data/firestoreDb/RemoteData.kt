@@ -53,7 +53,8 @@ class RemoteData : RemoteDataBase {
                 NodesDocumetsFields.FIELD_FIRSTNAME to user.firstName,
                 NodesDocumetsFields.FIELD_DATETIME to FieldValue.serverTimestamp(),
                 NodesDocumetsFields.FIELD_MONEY to purchase,
-                NodesDocumetsFields.FIELD_CATEGORIES to categories.map { it.name }.toString()
+                NodesDocumetsFields.FIELD_CATEGORIES to categories.map { it.name }.toString(),
+                NodesDocumetsFields.FIELD_ID_DRINKING to lastDrinkID()
             )
             db.collection(NodesDocumetsFields.NODE_TRANSACTIONS)
                 .add(transaction)
@@ -184,9 +185,21 @@ class RemoteData : RemoteDataBase {
             .update(hashMap).await()
     }
 
+    private suspend fun lastDrinkID(): String {
+        val lastDrinkingID = db
+            .collection(NodesDocumetsFields.NODE_DRINKING_EVENTS)
+            .orderBy(NodesDocumetsFields.FIELD_DATETIME)
+            .limitToLast(1)
+            .get()
+            .await()
+            .map { it.id }[0]
+        Log.d("checkCode lastDrinkID", lastDrinkingID)
+        return lastDrinkingID
+    }
+
     private suspend fun resetCategoriesMoney() {
         db.collection(NodesDocumetsFields.NODE_CATEGORY).get().await().forEach {
-            it.reference.update(NodesDocumetsFields.FIELD_AMOUNT, 0)
+            it.reference.update(NodesDocumetsFields.FIELD_AMOUNT, 0).await()
         }
     }
 
@@ -195,7 +208,6 @@ class RemoteData : RemoteDataBase {
             NodesDocumetsFields.FIELD_DATETIME to FieldValue.serverTimestamp()
         )
         db.collection(NodesDocumetsFields.NODE_DRINKING_EVENTS).add(drinking).await()
-
     }
 
     private fun updateUserDonationStatistic(
@@ -242,6 +254,7 @@ object NodesDocumetsFields {
     const val FIELD_DESCRIPTION = "description"
     const val FIELD_NAME = "name"
     const val FIELD_ALLTIME_DONATIONS = "allTimeDonations"
+    const val FIELD_ID_DRINKING = "drinking"
 
 
 }

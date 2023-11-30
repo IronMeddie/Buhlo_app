@@ -92,7 +92,7 @@ class ProfileViewModel @Inject constructor(
     fun reset(){
         CoroutineScope(Dispatchers.IO).launch {
             resetBalance().collectLatest {
-
+                _resetResult.emit(it)
             }
         }
     }
