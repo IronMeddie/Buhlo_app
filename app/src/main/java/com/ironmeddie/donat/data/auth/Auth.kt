@@ -24,8 +24,6 @@ class Auth() : Authorization {
     override fun logIn(login: String, password: String): Flow<AuthResult> = flow {
         try {
             auth.signInWithEmailAndPassword(login, password).await()
-
-
             emit(AuthResult.Success)
         } catch (t: Throwable) {
             AppMetrica.reportError("logIn", t)

@@ -16,6 +16,7 @@ import com.ironmeddie.donat.ui.mainScrreen.components.getCategorys
 import com.ironmeddie.donat.utils.Constance
 import com.ironmeddie.donat.utils.toListOfStrings
 import com.ironmeddie.donat.utils.toTimeFormat
+import com.ironmeddie.donat.utils.toTransaction
 import io.appmetrica.analytics.AppMetrica
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -46,44 +47,50 @@ class RemoteData : RemoteDataBase {
         }
     }
 
+    private suspend fun newTransaction(user: User, purchase: Double, categories: List<Category>){
+        val transaction = hashMapOf(
+            NodesDocumetsFields.FIELD_EMAIL to user.email,
+            NodesDocumetsFields.FIELD_FIRSTNAME to user.firstName,
+            NodesDocumetsFields.FIELD_DATETIME to FieldValue.serverTimestamp(),
+            NodesDocumetsFields.FIELD_MONEY to purchase,
+            NodesDocumetsFields.FIELD_CATEGORIES to categories.map { it.name }.toString(),
+            NodesDocumetsFields.FIELD_ID_DRINKING to lastDrinkID()
+        )
+        db.collection(NodesDocumetsFields.NODE_TRANSACTIONS)
+            .add(transaction)
+            .await()
+    }
+
+    private suspend fun updateMoney(purchase: Double){
+        db.collection(NodesDocumetsFields.NODE_MONEY)
+            .document(NodesDocumetsFields.DOCUMENT_MONEY)
+            .update(NodesDocumetsFields.FIELD_MONEY, FieldValue.increment(purchase))
+            .await()
+    }
+
+    private suspend fun updateCategoryAmount(categories: List<Category>, amount: Double){
+        categories.forEach {
+            db.collection(NodesDocumetsFields.NODE_CATEGORY).document(it.id)
+                .update(NodesDocumetsFields.FIELD_AMOUNT, FieldValue.increment(amount))
+                .await()
+
+            db.collection(NodesDocumetsFields.NODE_CATEGORY).document(it.id)
+                .update(NodesDocumetsFields.FIELD_VOUTES, FieldValue.increment(1))
+                .await()
+        }
+    }
     override suspend fun addTransaction(user: User, purchase: Double, categories: List<Category>) {
         try {
-            val transaction = hashMapOf(
-                NodesDocumetsFields.FIELD_EMAIL to user.email,
-                NodesDocumetsFields.FIELD_FIRSTNAME to user.firstName,
-                NodesDocumetsFields.FIELD_DATETIME to FieldValue.serverTimestamp(),
-                NodesDocumetsFields.FIELD_MONEY to purchase,
-                NodesDocumetsFields.FIELD_CATEGORIES to categories.map { it.name }.toString(),
-                NodesDocumetsFields.FIELD_ID_DRINKING to lastDrinkID()
-            )
-            db.collection(NodesDocumetsFields.NODE_TRANSACTIONS)
-                .add(transaction)
-                .await()
-
-            db.collection(NodesDocumetsFields.NODE_MONEY)
-                .document(NodesDocumetsFields.DOCUMENT_MONEY)
-                .update(NodesDocumetsFields.FIELD_MONEY, FieldValue.increment(purchase))
-                .await()
-
+            newTransaction(user,purchase,categories)
+            updateMoney(purchase)
             val amount = if (categories.size > 0) purchase / categories.size else purchase
-
-            categories.forEach {
-                db.collection(NodesDocumetsFields.NODE_CATEGORY).document(it.id)
-                    .update(NodesDocumetsFields.FIELD_AMOUNT, FieldValue.increment(amount))
-                    .await()
-
-                db.collection(NodesDocumetsFields.NODE_CATEGORY).document(it.id)
-                    .update(NodesDocumetsFields.FIELD_VOUTES, FieldValue.increment(1))
-                    .await()
-            }
-
-
+            updateCategoryAmount(categories,amount)
+            updateUserDonationStatistic(purchase,categories,amount)
             val event: HashMap<String, Any> = hashMapOf(
                 "userID" to user.id,
                 "revenue" to purchase
             )
             AppMetrica.reportEvent("transaction", event)
-
         } catch (t: Throwable) {
             Log.d(Constance.TAG, t.message.toString())
             AppMetrica.reportError(Constance.ERROR_TRANSACTION, t)
@@ -139,20 +146,8 @@ class RemoteData : RemoteDataBase {
                     .collection(NodesDocumetsFields.NODE_TRANSACTIONS)
                     .get()
                     .await().map {
-
-                        val cat = it.data[NodesDocumetsFields.FIELD_CATEGORIES].toString()
-                            .toListOfStrings()
-                        Transaction(
-                            userName = it.data[NodesDocumetsFields.FIELD_FIRSTNAME].toString(),
-                            email = it.data[NodesDocumetsFields.FIELD_EMAIL].toString(),
-                            dateTime = (it.data[NodesDocumetsFields.FIELD_DATETIME] as Timestamp).toTimeFormat(),
-                            money = it.data[NodesDocumetsFields.FIELD_MONEY].toString(),
-                            categories = cat,
-                            id = it.id,
-                        )
+                        it.toTransaction()
                     }
-
-
                 emit(list)
             } catch (t: Throwable) {
                 Log.d(Constance.TAG, t.message.toString())
@@ -210,7 +205,7 @@ class RemoteData : RemoteDataBase {
         db.collection(NodesDocumetsFields.NODE_DRINKING_EVENTS).add(drinking).await()
     }
 
-    private fun updateUserDonationStatistic(
+    private fun updateUserDonationStatistic(  // todo  still not work
         purchase: Double,
         categories: List<Category>,
         categoryAmount: Double
