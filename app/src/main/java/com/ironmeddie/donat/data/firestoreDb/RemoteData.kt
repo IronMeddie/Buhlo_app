@@ -162,14 +162,11 @@ class RemoteData : RemoteDataBase {
     }
 
 
-    fun updateUserStatistic(purchase: Double, categories: List<Category>, categoryAmount: Double) {
-        //todo
-    }
-
     override fun resetBalance(): Flow<SyncResult> = flow {
         try {
             resetMoneyNode()
             resetCategoriesMoney()
+            newDrinkingEvent()
             emit(SyncResult.Success)
         } catch (t: Throwable) {
             AppMetrica.reportError("resetBalance", t)
@@ -195,7 +192,7 @@ class RemoteData : RemoteDataBase {
 
     private suspend fun newDrinkingEvent() {
         val drinking = hashMapOf<String, Any>(
-            timestamp = FieldValue.serverTimestamp()
+            NodesDocumetsFields.FIELD_DATETIME to FieldValue.serverTimestamp()
         )
         db.collection(NodesDocumetsFields.NODE_DRINKING_EVENTS).add(drinking).await()
 

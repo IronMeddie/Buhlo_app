@@ -55,6 +55,7 @@ import coil.compose.AsyncImage
 import com.google.firebase.auth.FirebaseUser
 import com.ironmeddie.donat.R
 import com.ironmeddie.donat.data.auth.AuthResult
+import com.ironmeddie.donat.domain.SyncResult
 import com.ironmeddie.donat.ui.mainScrreen.components.MyTextField
 import com.ironmeddie.donat.ui.navHost.navigateToLoginScreen
 import com.ironmeddie.donat.ui.theme.Border
@@ -63,6 +64,7 @@ import com.ironmeddie.donat.ui.theme.GreyIconBack
 import com.ironmeddie.donat.ui.theme.NameProfile
 import com.ironmeddie.donat.ui.theme.TransparentWhite
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @Composable
@@ -78,6 +80,20 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hi
 
     var isTextFieldNeeded by remember {
         mutableStateOf(false)
+    }
+
+    var resetResult by remember {
+        mutableStateOf("")
+    }
+
+    LaunchedEffect(key1 = viewModel.resetResult){
+        viewModel.resetResult.collect{
+            when(it){
+                is SyncResult.Loading ->{ resetResult = "loading"}
+                is SyncResult.Success ->{ resetResult = "Success"}
+                is SyncResult.Failure ->{ resetResult = "Failure ${it.message}"}
+            }
+        }
     }
 
 
@@ -231,6 +247,20 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hi
                             painter = painterResource(id = R.drawable.arrow_next),
                             contentDescription = "arrow"
                         )
+                    }
+                }
+
+                item {
+                    ProfileListItem("resetResult", R.drawable.log_in, {
+                        viewModel.reset()
+                        resetResult = "loading"
+                    }) {
+//                        Icon(
+//                            painter = painterResource(id = R.drawable.arrow_next),
+//                            contentDescription = "arrow"
+//                        )
+                        
+                        Text(text = resetResult)
                     }
                 }
 

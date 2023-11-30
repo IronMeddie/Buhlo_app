@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
 import com.ironmeddie.donat.data.auth.AuthResult
+import com.ironmeddie.donat.domain.ResetBalance
+import com.ironmeddie.donat.domain.SyncResult
 import com.ironmeddie.donat.domain.auth.ChangeName
 import com.ironmeddie.donat.domain.auth.CurrentUser
 import com.ironmeddie.donat.domain.auth.SignOut
@@ -26,6 +28,7 @@ class ProfileViewModel @Inject constructor(
     private val currentUser: CurrentUser,
     private val changeAvatar: changeProfileAvatar,
     private val changeName: ChangeName,
+    private val resetBalance: ResetBalance
 
     ) : ViewModel() {
 
@@ -35,7 +38,8 @@ class ProfileViewModel @Inject constructor(
     private val _firstName = MutableStateFlow<String>("")
     val firstName = _firstName.asStateFlow()
 
-
+    private val _resetResult = MutableSharedFlow<SyncResult>()
+    val resetResult = _resetResult.asSharedFlow()
 
     private val _logOut = MutableStateFlow<AuthResult>(AuthResult.Loading)
     val logOut = _logOut.asStateFlow()
@@ -81,6 +85,14 @@ class ProfileViewModel @Inject constructor(
         CoroutineScope(Dispatchers.IO).launch {
             changeName(firstName.value).collectLatest {
                 _uploadResult.emit(it)
+            }
+        }
+    }
+
+    fun reset(){
+        CoroutineScope(Dispatchers.IO).launch {
+            resetBalance().collectLatest {
+
             }
         }
     }
