@@ -77,8 +77,9 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun firstnameChange(name: String) {
-        if (!name.contains("\n"))
-        _firstName.value = name
+        if (!name.contains("\n")){
+            _firstName.value = name
+        }
     }
 
     fun uploadNewFirstName() {
