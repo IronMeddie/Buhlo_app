@@ -2,10 +2,12 @@ package com.ironmeddie.donat.data.firestoreDb
 
 import android.util.Log
 import com.google.firebase.Timestamp
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
+import com.ironmeddie.donat.domain.SyncResult
 import com.ironmeddie.donat.models.Category
 import com.ironmeddie.donat.models.Money
 import com.ironmeddie.donat.models.Transaction
@@ -158,6 +160,61 @@ class RemoteData : RemoteDataBase {
 
         }
     }
+
+
+    fun updateUserStatistic(purchase: Double, categories: List<Category>, categoryAmount: Double) {
+        //todo
+    }
+
+    override fun resetBalance(): Flow<SyncResult> = flow {
+        try {
+            resetMoneyNode()
+            resetCategoriesMoney()
+            emit(SyncResult.Success)
+        } catch (t: Throwable) {
+            AppMetrica.reportError("resetBalance", t)
+            emit(SyncResult.Failure(t.message.toString()))
+        }
+    }
+
+    private suspend fun resetMoneyNode() {
+        val hashMap = hashMapOf<String, Any>(
+            NodesDocumetsFields.FIELD_MONEY to 0,
+            NodesDocumetsFields.FIELD_APPROVED_MONEY to 0
+        )
+        db.collection(NodesDocumetsFields.NODE_MONEY)
+            .document(NodesDocumetsFields.DOCUMENT_MONEY)
+            .update(hashMap).await()
+    }
+
+    private suspend fun resetCategoriesMoney() {
+        db.collection(NodesDocumetsFields.NODE_CATEGORY).get().await().forEach {
+            it.reference.update(NodesDocumetsFields.FIELD_AMOUNT, 0)
+        }
+    }
+
+    private suspend fun newDrinkingEvent() {
+        val drinking = hashMapOf<String, Any>(
+            timestamp = FieldValue.serverTimestamp()
+        )
+        db.collection(NodesDocumetsFields.NODE_DRINKING_EVENTS).add(drinking).await()
+
+    }
+
+    private fun updateUserDonationStatistic(
+        purchase: Double,
+        categories: List<Category>,
+        categoryAmount: Double
+    ) {
+        val auth = Firebase.auth
+        val email = auth.currentUser?.email ?: return
+        db.collection(NodesDocumetsFields.NODE_USER).document(email)
+            .update(NodesDocumetsFields.FIELD_ALLTIME_DONATIONS, FieldValue.increment(purchase))
+        categories.forEach {
+            db.collection(NodesDocumetsFields.NODE_USER).document(email)
+                .update(it.name, FieldValue.increment(categoryAmount))
+        }
+    }
 }
 
 object NodesDocumetsFields {
@@ -166,13 +223,15 @@ object NodesDocumetsFields {
     const val NODE_CATEGORY = "alc_categories"
     const val NODE_TRANSACTIONS = "transactions"
     const val NODE_MONEY = "money"
+    const val NODE_USER = "user"
+    const val NODE_DRINKING_EVENTS = "drinking"
 
     //documents
     const val DOCUMENT_MONEY = "money"
 
     // fields
     const val FIELD_MONEY = "money"
-//    const val FIELD_APPROVED = "approved"
+    const val FIELD_APPROVED_MONEY = "approved"
 
 
     const val FIELD_CATEGORIES = "categories"
@@ -185,6 +244,7 @@ object NodesDocumetsFields {
     const val FIELD_PICTURE = "picture"
     const val FIELD_DESCRIPTION = "description"
     const val FIELD_NAME = "name"
+    const val FIELD_ALLTIME_DONATIONS = "allTimeDonations"
 
 
 }

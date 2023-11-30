@@ -1,5 +1,6 @@
 package com.ironmeddie.donat.data.firestoreDb
 
+import com.ironmeddie.donat.domain.SyncResult
 import com.ironmeddie.donat.models.Category
 import com.ironmeddie.donat.models.Money
 import com.ironmeddie.donat.models.Transaction
@@ -16,4 +17,6 @@ interface RemoteDataBase {
 
     fun getCategoryes():Flow<List<Category>>
     fun getTransactions():Flow<List<Transaction>>
+
+    fun resetBalance(): Flow<SyncResult>
 }

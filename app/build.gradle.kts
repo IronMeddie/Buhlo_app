@@ -96,6 +96,11 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
     kapt("androidx.room:room-compiler:$room_version")
+    
+    
+    // varioqub
+    implementation("com.yandex.varioqub:config:0.5.0")
+    implementation("com.yandex.varioqub:appmetrica-adapter:0.5.0")
 
 
 }
