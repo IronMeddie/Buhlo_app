@@ -49,6 +49,7 @@ class ProfileViewModel @Inject constructor(
     val uploadResult = _uploadResult.asSharedFlow()
     init {
         getUser()
+
     }
 
     fun logOut() {
